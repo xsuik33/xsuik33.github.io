@@ -128,7 +128,10 @@ document.getElementById('regForm').onsubmit = async (e) => {
         alert("Error: " + err.message);
     }
 };
-
+function buscarLibro() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    alert("Buscando: " + query + " (Función en desarrollo para la Práctica 2)");
+}
 // Ejecutar al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
     cargarLibros();
