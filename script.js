@@ -1,6 +1,6 @@
 // 1. CONFIGURACIÓN DE CONEXIÓN (Sustituye con tus llaves de Supabase)
-const supabaseUrl = 'TU_PROJECT_URL_AQUÍ'; 
-const supabaseKey = 'TU_ANON_KEY_AQUÍ';
+const supabaseUrl = 'https://fetqdwxjgwqveqpxlkdo.supabase.co'; 
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHFkd3hqZ3dxdmVxcHhsa2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODg2OTgsImV4cCI6MjA4OTg2NDY5OH0.-e4KBX2QgHIfgC62nBhmy30Z0I12SskQmbG1KK-QhkI';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // 2. CARGAR LIBROS DESDE LA BASE DE DATOS
