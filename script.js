@@ -3,7 +3,7 @@
 // ==========================================
 // Sustituye estas dos líneas con tus datos reales de Supabase
 const SB_URL = 'https://fetqdwxjgwqveqpxlkdo.supabase.co'; 
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHFkd3hqZ3dxdmVxcHhsa2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODg2OTgsImV4cCI6MjA4OTg2NDY5OH0.-e4KBX2QgHIfgC62nBhmy30Z0I12SskQmbG1KK-QhkI';
+const SB_KEY = 'ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1abGRIRmtkM2hxWjNkeGRtVnhjSGhzYTJSdklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpReU9EZzJPVGdzSW1WNGNDSTZNakE0T1RnMk5EWTVPSDAuLWU0S0JYMlFnSElmZ0M2Mm5CaG15MzBaMEkxMlNza1FtYkcxS0stUWhrSQ==';
 
 // Usamos la variable 'db' para evitar el error de "Identifier already declared"
 const db = window.supabase.createClient(SB_URL, SB_KEY);
