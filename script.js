@@ -1,8 +1,11 @@
-// 1. CONFIGURACIÓN DE CONEXIÓN (Sustituye con tus llaves de Supabase)
-const supabaseUrl = 'https://fetqdwxjgwqveqpxlkdo.supabase.co'; 
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHFkd3hqZ3dxdmVxcHhsa2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODg2OTgsImV4cCI6MjA4OTg2NDY5OH0.-e4KBX2QgHIfgC62nBhmy30Z0I12SskQmbG1KK-QhkI';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+// Cambiamos el nombre de la variable para evitar el conflicto del SyntaxError
+const supabaseClient = window.supabase.createClient('https://fetqdwxjgwqveqpxlkdo.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHFkd3hqZ3dxdmVxcHhsa2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODg2OTgsImV4cCI6MjA4OTg2NDY5OH0.-e4KBX2QgHIfgC62nBhmy30Z0I12SskQmbG1KK-QhkI');
 
+// De aquí en adelante, asegúrate de usar 'supabaseClient' en lugar de 'supabase'
+async function cargarLibros() {
+    const { data: libros, error } = await supabaseClient.from('libros').select('*');
+    // ... resto del código
+}
 async function cargarLibros() {
     const grid = document.getElementById('bookGrid');
     if (!grid) return;
