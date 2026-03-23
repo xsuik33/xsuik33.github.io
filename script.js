@@ -3,10 +3,12 @@
 // ==========================================
 // Sustituye estas dos líneas con tus datos reales de Supabase
 const SB_URL = 'https://fetqdwxjgwqveqpxlkdo.supabase.co'; 
-const SB_KEY = 'ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1abGRIRmtkM2hxWjNkeGRtVnhjSGhzYTJSdklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpReU9EZzJPVGdzSW1WNGNDSTZNakE0T1RnMk5EWTVPSDAuLWU0S0JYMlFnSElmZ0M2Mm5CaG15MzBaMEkxMlNza1FtYkcxS0stUWhrSQ==';
+const llave_oculta = 'ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1abGRIRmtkM2hxWjNkeGRtVnhjSGhzYTJSdklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpReU9EZzJPVGdzSW1WNGNDSTZNakE0T1RnMk5EWTVPSDAuLWU0S0JYMlFnSElmZ0M2Mm5CaG15MzBaMEkxMlNza1FtYkcxS0stUWhrSQ==';
+
+const supabaseKey = atob(llave_oculta);
 
 // Usamos la variable 'db' para evitar el error de "Identifier already declared"
-const db = window.supabase.createClient(SB_URL, SB_KEY);
+const db = window.supabase.createClient(SB_URL, supabasekey);
 
 // ==========================================
 // 2. LÓGICA DE LA VENTANA EMERGENTE (MODAL)
