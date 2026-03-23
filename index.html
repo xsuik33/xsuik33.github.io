@@ -52,9 +52,9 @@
             <p style="color: #94a3b8; margin-bottom: 20px;">Crea tu cuenta con seguridad en la nube.</p>
             
             <form id="regForm">
-                <input type="text" id="curp" placeholder="CURP (Llave Primaria)" required>
+                <input type="text" id="curp" placeholder="CURP (18 caracteres)" required maxlength="18">
                 <input type="text" id="nombre" placeholder="Nombre Completo" required>
-                <input type="text" id="user" placeholder="Nombre de Usuario" required>
+                <input type="text" id="user" placeholder="Nombre de Usuario (ej. saul01)" required>
                 <input type="password" id="pass" placeholder="Contraseña" required>
                 
                 <label style="display:block; margin-top:10px; font-size:0.8rem; color:#3d5afe">Selecciona tu Rol:</label>
@@ -69,13 +69,8 @@
         </div>
     </div>
 
- <div id="modalRegistro" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="script.js"></script>
 </body>
 </html>
