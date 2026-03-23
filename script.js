@@ -2,8 +2,8 @@
 // 1. CONFIGURACIÓN DE SUPABASE
 // ==========================================
 // Sustituye estas dos líneas con tus datos reales de Supabase
-const SB_URL = 'AQUI_TU_PROJECT_URL'; 
-const SB_KEY = 'AQUI_TU_ANON_PUBLIC_KEY';
+const SB_URL = 'https://fetqdwxjgwqveqpxlkdo.supabase.co'; 
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHFkd3hqZ3dxdmVxcHhsa2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODg2OTgsImV4cCI6MjA4OTg2NDY5OH0.-e4KBX2QgHIfgC62nBhmy30Z0I12SskQmbG1KK-QhkI';
 
 // Usamos la variable 'db' para evitar el error de "Identifier already declared"
 const db = window.supabase.createClient(SB_URL, SB_KEY);
