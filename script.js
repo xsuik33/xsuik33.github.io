@@ -1,153 +1,140 @@
-// 1. CONFIGURACIÓN DE SUPABASE (Copia esto de tu panel de Settings > API)
+// 1. CONFIGURACIÓN DE CONEXIÓN (Sustituye con tus llaves de Supabase)
 const supabaseUrl = 'TU_PROJECT_URL_AQUÍ'; 
 const supabaseKey = 'TU_ANON_KEY_AQUÍ';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// 2. DATOS ESTÁTICOS DE LIBROS
-const libros = [
-    { titulo: "Crimen y Castigo", autor: "Fiódor Dostoyevski", genero: "Novela Psicológica", emoji: "⚖️" },
-    { titulo: "La Tregua", autor: "Mario Benedetti", genero: "Drama Romántico", emoji: "☕" },
-    { titulo: "Árbol de Diana", autor: "Alejandra Pizarnik", genero: "Poesía", emoji: "🌿" },
-    { titulo: "La Metamorfosis", autor: "Franz Kafka", genero: "Existencialismo", emoji: "🪲" },
-    { titulo: "Así habló Zaratustra", autor: "Friedrich Nietzsche", genero: "Filosofía", emoji: "🏔️" },
-    { titulo: "Los hermanos Karamázov", autor: "Fiódor Dostoyevski", genero: "Novela", emoji: "👨‍👦‍👦" },
-    { titulo: "La última inocencia", autor: "Alejandra Pizarnik", genero: "Poesía", emoji: "🌑" },
-    { titulo: "El Proceso", autor: "Franz Kafka", genero: "Surrealismo", emoji: "🏛️" }
-];
-
-// 3. CARGAR LIBROS EN EL GRID
-function cargarLibros() {
+// 2. CARGAR LIBROS DESDE LA BASE DE DATOS
+async function cargarLibros() {
     const grid = document.getElementById('bookGrid');
     if (!grid) return;
+
+    // Traemos los datos de la tabla 'libros' (Entidad Fuerte)
+    const { data: libros, error } = await supabase
+        .from('libros')
+        .select('*');
+
+    if (error) {
+        console.error("Error al cargar libros:", error.message);
+        grid.innerHTML = `<p style="color:red;">Error al conectar con la base de datos.</p>`;
+        return;
+    }
+
+    if (libros.length === 0) {
+        grid.innerHTML = `<p style="color:var(--text-dim);">No hay libros disponibles en el catálogo todavía.</p>`;
+        return;
+    }
+
     grid.innerHTML = libros.map(libro => `
         <div class="book-card">
-            <div class="book-img">${libro.emoji}</div>
+            <div class="book-img">
+                ${libro.emoji || '📖'}
+            </div>
             <div class="book-info">
                 <h4>${libro.titulo}</h4>
                 <span><strong>${libro.autor}</strong></span>
-                <p>${libro.genero}</p>
-                <button class="btn-sm">Solicitar Préstamo</button>
+                <p style="color:#64748b; font-size:0.8rem; margin-top:5px;">${libro.genero || 'General'}</p>
+                <button class="btn-primary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;">
+                    Solicitar Préstamo
+                </button>
             </div>
         </div>
     `).join('');
 }
 
-// 4. LÓGICA DEL MODAL
+// 3. LÓGICA DEL MODAL (VENTANA EMERGENTE)
 const modal = document.getElementById("modalRegistro");
 const btn = document.getElementById("btnRegistro");
 const span = document.querySelector(".close");
 
-btn.onclick = () => modal.style.display = "block";
-span.onclick = () => modal.style.display = "none";
-window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+// Abrir modal
+btn.onclick = () => {
+    modal.style.display = "block";
+};
 
-function actualizarPlaceholder() {
-    const tipo = document.getElementById('tipo').value;
-    document.getElementById('id_esc').placeholder = (tipo === 'alumno') ? "Número de Boleta" : "Número de Empleado";
-}
+// Cerrar modal (X)
+span.onclick = () => {
+    modal.style.display = "none";
+};
 
-// 5. REGISTRO EN SUPABASE
-document.getElementById('regForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const user = document.getElementById('user').value;
-    const pass = document.getElementById('pass').value;
-    const tipo = document.getElementById('tipo').value;
-
-    const { data, error } = await supabase.auth.signUp({
-        email: `${user}@escom.ipn.mx`,
-        password: pass,
-        options: {
-            data: {
-                nombre: document.getElementById('nombre').value,
-                username: user,
-                tipo: tipo
-            }
-        }
-    });
-
-    if (error) return alert("Error: " + error.message);
-
-    const tabla = tipo === 'alumno' ? 'alumnos' : 'profesores';
-    const col = tipo === 'alumno' ? 'boleta' : 'no_empleado';
-
-    const { error: dbError } = await supabase.from(tabla).insert([
-        { id: data.user.id, [col]: document.getElementById('id_esc').value }
-    ]);
-
-    if (dbError) alert("Error DB: " + dbError.message);
-    else {
-        alert("¡Registro exitoso en Supabase!");
+// Cerrar al hacer clic fuera de la ventana
+window.onclick = (event) => {
+    if (event.target == modal) {
         modal.style.display = "none";
     }
 };
+
+// Actualizar placeholder según el rol (Alumno/Profesor)
+function actualizarPlaceholder() {
+    const tipo = document.getElementById('tipo').value;
+    const inputId = document.getElementById('id_esc');
+    if (tipo === 'alumno') {
+        inputId.placeholder = "Número de Boleta";
+    } else {
+        inputId.placeholder = "Número de Empleado";
+    }
+}
+
+// 4. REGISTRO DE USUARIOS (JERARQUÍA EER)
 document.getElementById('regForm').onsubmit = async (e) => {
     e.preventDefault();
     
-    // Captura de datos del formulario
     const curp = document.getElementById('curp').value;
     const nombre = document.getElementById('nombre').value;
     const user = document.getElementById('user').value;
     const pass = document.getElementById('pass').value;
-    const tipo = document.getElementById('tipo').value; // 'alumno' o 'profesor'
+    const tipo = document.getElementById('tipo').value;
     const id_escolar = document.getElementById('id_esc').value;
 
     try {
-        // 1. Crear cuenta en la Auth de Supabase
+        // A. Crear usuario en Auth de Supabase (Sustituye a bcrypt)
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: `${user}@escom.ipn.mx`,
             password: pass,
+            options: {
+                data: { nombre, username: user, tipo }
+            }
         });
 
         if (authError) throw authError;
 
-        // 2. Insertar en el SUPERTIPO (profiles)
+        // B. Insertar en el Supertipo (profiles)
         const { error: profileError } = await supabase
             .from('profiles')
             .insert([{ 
                 id: authData.user.id, 
-                curp: curp, 
+                curp, 
                 nombre_completo: nombre, 
                 username: user, 
-                tipo: tipo 
+                tipo 
             }]);
 
         if (profileError) throw profileError;
 
-        // 3. Insertar en el SUBTIPO (alumnos o profesores)
+        // C. Insertar en el Subtipo (alumnos o profesores)
         const tabla = tipo === 'alumno' ? 'alumnos' : 'profesores';
-        const campoId = tipo === 'alumno' ? 'boleta' : 'no_empleado';
+        const colId = tipo === 'alumno' ? 'boleta' : 'no_empleado';
 
         const { error: subTypeError } = await supabase
             .from(tabla)
             .insert([{ 
                 id: authData.user.id, 
-                [campoId]: id_escolar 
+                [colId]: id_escolar 
             }]);
 
         if (subTypeError) throw subTypeError;
 
-        alert("¡Registro exitoso en la nube de Supabase!");
+        alert("¡Registro exitoso! Ya eres parte de BiblioTech ESCOM.");
         modal.style.display = "none";
+        document.getElementById('regForm').reset();
         
     } catch (err) {
-        alert("Error en el registro: " + err.message);
-        console.error(err);
+        alert("Error: " + err.message);
     }
 };
 
-async function iniciarSesion(usuario, password) {
-    const email = `${usuario}@escom.ipn.mx`;
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-    });
-
-    if (error) {
-        alert("Error al ingresar: " + error.message);
-    } else {
-        alert("¡Bienvenido a BiblioTech!");
-        // Aquí podrías redirigir o mostrar el perfil del usuario
-    }
-}
-
-document.addEventListener('DOMContentLoaded', cargarLibros);
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    cargarLibros();
+    // Asegurar que el select funcione desde el inicio
+    document.getElementById('tipo').addEventListener('change', actualizarPlaceholder);
+});
