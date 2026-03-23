@@ -3,39 +3,33 @@ const supabaseUrl = 'https://fetqdwxjgwqveqpxlkdo.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZldHFkd3hqZ3dxdmVxcHhsa2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODg2OTgsImV4cCI6MjA4OTg2NDY5OH0.-e4KBX2QgHIfgC62nBhmy30Z0I12SskQmbG1KK-QhkI';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// 2. CARGAR LIBROS DESDE LA BASE DE DATOS
 async function cargarLibros() {
     const grid = document.getElementById('bookGrid');
     if (!grid) return;
 
-    // Traemos los datos de la tabla 'libros' (Entidad Fuerte)
-    const { data: libros, error } = await supabase
-        .from('libros')
-        .select('*');
+    console.log("Intentando cargar libros desde Supabase...");
+    const { data: libros, error } = await supabase.from('libros').select('*');
 
     if (error) {
-        console.error("Error al cargar libros:", error.message);
-        grid.innerHTML = `<p style="color:red;">Error al conectar con la base de datos.</p>`;
+        console.error("Error de Supabase:", error);
+        grid.innerHTML = `<p style="color:red">Error: ${error.message}</p>`;
         return;
     }
 
+    console.log("Libros recibidos:", libros);
+
     if (libros.length === 0) {
-        grid.innerHTML = `<p style="color:var(--text-dim);">No hay libros disponibles en el catálogo todavía.</p>`;
+        grid.innerHTML = `<p>La tabla está vacía. Agrega libros en el panel de Supabase.</p>`;
         return;
     }
 
     grid.innerHTML = libros.map(libro => `
         <div class="book-card">
-            <div class="book-img">
-                ${libro.emoji || '📖'}
-            </div>
+            <div class="book-img">${libro.emoji || '📖'}</div>
             <div class="book-info">
                 <h4>${libro.titulo}</h4>
-                <span><strong>${libro.autor}</strong></span>
-                <p style="color:#64748b; font-size:0.8rem; margin-top:5px;">${libro.genero || 'General'}</p>
-                <button class="btn-primary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;">
-                    Solicitar Préstamo
-                </button>
+                <span>${libro.autor}</span>
+                <button class="btn-primary">Solicitar</button>
             </div>
         </div>
     `).join('');
