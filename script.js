@@ -24,15 +24,3 @@ window.onclick = (event) => {
         modal.style.display = "none";
     }
 };
-3. El "Z-Index" en el CSS
-A veces el modal sí se abre, pero se queda "atrás" de la página y no lo ves. Asegúrate de que tu style.css tenga esto:
-
-CSS
-.modal {
-    display: none; 
-    position: fixed !important; 
-    z-index: 9999 !important; /* Valor muy alto para que salga al frente */
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.9);
-}
