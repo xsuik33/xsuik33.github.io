@@ -80,5 +80,74 @@ document.getElementById('regForm').onsubmit = async (e) => {
         modal.style.display = "none";
     }
 };
+document.getElementById('regForm').onsubmit = async (e) => {
+    e.preventDefault();
+    
+    // Captura de datos del formulario
+    const curp = document.getElementById('curp').value;
+    const nombre = document.getElementById('nombre').value;
+    const user = document.getElementById('user').value;
+    const pass = document.getElementById('pass').value;
+    const tipo = document.getElementById('tipo').value; // 'alumno' o 'profesor'
+    const id_escolar = document.getElementById('id_esc').value;
+
+    try {
+        // 1. Crear cuenta en la Auth de Supabase
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: `${user}@escom.ipn.mx`,
+            password: pass,
+        });
+
+        if (authError) throw authError;
+
+        // 2. Insertar en el SUPERTIPO (profiles)
+        const { error: profileError } = await supabase
+            .from('profiles')
+            .insert([{ 
+                id: authData.user.id, 
+                curp: curp, 
+                nombre_completo: nombre, 
+                username: user, 
+                tipo: tipo 
+            }]);
+
+        if (profileError) throw profileError;
+
+        // 3. Insertar en el SUBTIPO (alumnos o profesores)
+        const tabla = tipo === 'alumno' ? 'alumnos' : 'profesores';
+        const campoId = tipo === 'alumno' ? 'boleta' : 'no_empleado';
+
+        const { error: subTypeError } = await supabase
+            .from(tabla)
+            .insert([{ 
+                id: authData.user.id, 
+                [campoId]: id_escolar 
+            }]);
+
+        if (subTypeError) throw subTypeError;
+
+        alert("¡Registro exitoso en la nube de Supabase!");
+        modal.style.display = "none";
+        
+    } catch (err) {
+        alert("Error en el registro: " + err.message);
+        console.error(err);
+    }
+};
+
+async function iniciarSesion(usuario, password) {
+    const email = `${usuario}@escom.ipn.mx`;
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+    });
+
+    if (error) {
+        alert("Error al ingresar: " + error.message);
+    } else {
+        alert("¡Bienvenido a BiblioTech!");
+        // Aquí podrías redirigir o mostrar el perfil del usuario
+    }
+}
 
 document.addEventListener('DOMContentLoaded', cargarLibros);
