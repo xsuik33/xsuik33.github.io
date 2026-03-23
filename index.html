@@ -3,242 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioTech | Sistema Pro</title>
+    <title>BiblioTech | Gestión de Biblioteca ESCOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
-    <style>
-        /* --- TODA LA MAGIA DEL CSS AQUÍ --- */
-        :root {
-            --bg: #05070a;
-            --surface: #0f121a;
-            --primary: #3d5afe;
-            --accent: #00e5ff;
-            --text-main: #ffffff;
-            --text-dim: #94a3b8;
-            --card-border: rgba(255, 255, 255, 0.08);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        /* Fondo con brillo sutil */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% -20%, #1e266d 0%, transparent 50%);
-            z-index: -1;
-        }
-
-        /* Navbar */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 10%;
-            background: rgba(5, 7, 10, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--card-border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; }
-        .logo span { color: var(--primary); }
-
-        .btn-add {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-add:hover { box-shadow: 0 0 20px rgba(61, 90, 254, 0.4); }
-
-        /* Hero */
-        .hero {
-            padding: 100px 10% 60px;
-            text-align: center;
-        }
-
-        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; }
-        .hero p { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 2rem; }
-
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            background: var(--surface);
-            padding: 6px;
-            border-radius: 16px;
-            border: 1px solid var(--card-border);
-        }
-
-        .search-container input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 12px 20px;
-            color: white;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .search-container button {
-            background: #1e2230;
-            color: white;
-            border: none;
-            padding: 0 25px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        /* Grid de Libros */
-        .container { padding: 40px 10%; }
-        
-        .section-title {
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        /* Tarjeta de Libro */
-        .book-card {
-            background: var(--surface);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .book-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            background: #141925;
-        }
-
-        .cover-placeholder {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #1e266d, #0f121a);
-            border-radius: 16px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-        }
-
-        .book-card h3 { font-size: 1.2rem; margin-bottom: 5px; }
-        .book-card p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 15px; }
-
-        .status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .available { background: rgba(0, 229, 255, 0.1); color: var(--accent); }
-
-        .btn-loan {
-            width: 100%;
-            margin-top: 15px;
-            background: #1e2230;
-            border: 1px solid var(--card-border);
-            color: white;
-            padding: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .btn-loan:hover { background: var(--primary); }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <nav>
-        <div class="logo">BIBLIO<span>TECH</span></div>
-        <button class="btn-add">+ Agregar Libro</button>
+    <nav class="navbar">
+        <div class="logo">Biblio<span>Tech</span></div>
+        <div class="nav-links">
+            <a href="#" class="active">Catálogo</a>
+            <a href="#">Préstamos</a>
+            <a href="#">Comunidad</a>
+            <button class="btn-primary" id="btnRegistro">+ Registro</button>
+        </div>
     </nav>
 
     <header class="hero">
-        <h1>Tu biblioteca, reinventada.</h1>
-        <p>Gestión inteligente para el acervo cultural de la comunidad.</p>
-        <div class="search-container">
-            <input type="text" placeholder="¿Qué libro buscas hoy?">
-            <button>Buscar</button>
+        <div class="hero-content">
+            <h1>Tu biblioteca, reinventada.</h1>
+            <p>Gestión inteligente para el acervo cultural de la comunidad politécnica.</p>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Buscar por título, autor o categoría...">
+                <button onclick="buscarLibro()">Buscar</button>
+            </div>
         </div>
     </header>
 
     <main class="container">
+        <section class="stats">
+            <div class="stat-card"><h3>1,250</h3><p>Libros Totales</p></div>
+            <div class="stat-card"><h3>45</h3><p>Prestados hoy</p></div>
+            <div class="stat-card"><h3>12</h3><p>Nuevos ingresos</p></div>
+        </section>
+
         <div class="section-title">
             <h2>Colección de Autores Imprescindibles</h2>
+            <div class="line" style="width: 50px; height: 4px; background: #3d5afe; border-radius: 2px; margin-top: 10px;"></div>
         </div>
 
-        <div class="grid" id="bookGrid">
-            </div>
+        <div class="grid" id="bookGrid"></div>
     </main>
 
-    <script>
-        const libros = [
-            { titulo: "Crimen y Castigo", autor: "Fiódor Dostoyevski", genero: "Novela Psicológica", emoji: "⚖️" },
-            { titulo: "La Tregua", autor: "Mario Benedetti", genero: "Drama Romántico", emoji: "☕" },
-            { titulo: "Árbol de Diana", autor: "Alejandra Pizarnik", genero: "Poesía", emoji: "🌿" },
-            { titulo: "La Metamorfosis", autor: "Franz Kafka", genero: "Existencialismo", emoji: "🪲" },
-            { titulo: "Así habló Zaratustra", autor: "Friedrich Nietzsche", genero: "Filosofía", emoji: "🏔️" },
-            { titulo: "Los hermanos Karamázov", autor: "Fiódor Dostoyevski", genero: "Novela", emoji: "👨‍👦‍👦" },
-            { titulo: "La última inocencia", autor: "Alejandra Pizarnik", genero: "Poesía", emoji: "🌑" },
-            { titulo: "El Proceso", autor: "Franz Kafka", genero: "Surrealismo", emoji: "🏛️" }
-        ];
+    <div id="modalRegistro" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Registro Comunidad IPN</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Crea tu cuenta con seguridad en la nube.</p>
+            
+            <form id="regForm">
+                <input type="text" id="curp" placeholder="CURP (Llave Primaria)" required>
+                <input type="text" id="nombre" placeholder="Nombre Completo" required>
+                <input type="text" id="user" placeholder="Nombre de Usuario" required>
+                <input type="password" id="pass" placeholder="Contraseña" required>
+                
+                <label style="display:block; margin-top:10px; font-size:0.8rem; color:#3d5afe">Selecciona tu Rol:</label>
+                <select id="tipo" onchange="actualizarPlaceholder()">
+                    <option value="alumno">Alumno</option>
+                    <option value="profesor">Profesor</option>
+                </select>
+                
+                <input type="text" id="id_esc" placeholder="Número de Boleta" required>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Registrar en Supabase</button>
+            </form>
+        </div>
+    </div>
 
-        function cargarLibros() {
-            const grid = document.getElementById('bookGrid');
-            grid.innerHTML = libros.map(libro => `
-                <div class="book-card">
-                    <div class="cover-placeholder">${libro.emoji}</div>
-                    <div class="status available">En Estantería</div>
-                    <h3>${libro.titulo}</h3>
-                    <p><strong>${libro.autor}</strong></p>
-                    <p>${libro.genero}</p>
-                    <button class="btn-loan">Solicitar Préstamo</button>
-                </div>
-            `).join('');
-        }
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        // Ejecutar cuando cargue la página
-        window.onload = cargarLibros;
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
