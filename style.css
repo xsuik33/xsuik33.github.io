@@ -211,3 +211,27 @@ body {
     display: block;
     font-weight: 600;
 }
+/* --- FIX DE EMERGENCIA PARA EL MODAL --- */
+#modalRegistro {
+    display: none; /* Se activa con JS */
+    position: fixed !important; /* !important obliga a que ignore otros estilos */
+    z-index: 9999 !important; 
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(15px);
+    overflow-y: auto; /* Por si el cel es chico y el form es largo */
+}
+
+.modal-content {
+    background-color: #0f121a !important;
+    margin: 50px auto !important; /* Lo separa del tope */
+    padding: 30px !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 20px !important;
+    max-width: 450px !important;
+    position: relative !important;
+    display: block !important; /* Evita que se hereden flexbox raros */
+}
