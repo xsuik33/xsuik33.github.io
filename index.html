@@ -15,7 +15,9 @@
             <a href="#" class="active">Catálogo</a>
             <a href="#">Préstamos</a>
             <a href="#">Comunidad</a>
+            <button class="btn-secondary" id="btnLogin" style="background:transparent; color:white; border:1px solid var(--primary); padding:10px 20px; border-radius:10px; cursor:pointer; margin-right:10px;">Login</button>
             <button class="btn-primary" id="btnRegistro">+ Registro</button>
+            <button class="btn-primary" id="btnLogout" style="display:none; background:var(--error); margin-left:10px;">Cerrar Sesión</button>
         </div>
     </nav>
 
@@ -69,8 +71,21 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div id="modalLogin" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeLogin">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Ingresa tus credenciales de la ESCOM.</p>
+            
+            <form id="loginForm">
+                <input type="text" id="loginUser" placeholder="Nombre de Usuario (ej. saul01)" required>
+                <input type="password" id="loginPass" placeholder="Contraseña" required>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Entrar al Sistema</button>
+            </form>
+        </div>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 </body>
 </html>
