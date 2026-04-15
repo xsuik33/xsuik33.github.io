@@ -1,18 +1,11 @@
-// ==========================================
-// 1. CONFIGURACIÓN DE SUPABASE
-// ==========================================
-// Sustituye estas dos líneas con tus datos reales de Supabase
+
 const SB_URL = 'https://fetqdwxjgwqveqpxlkdo.supabase.co'; 
-const llave_oculta = "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1abGRIRmtkM2hxWjNkeGRtVnhjSGhzYTJSdklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpReU9EZzJPVGdzSW1WNGNDSTZNakE0T1RnMk5EWTVPSDAuLWU0S0JYMlFnSElmZ0M2Mm5CaG15MzBaMEkxMlNza1FtYkcxS0stUWhrSQ==";
 
-const supabaseKey = atob(llave_oculta);
+const _k=["WjNkeGRtVnhjSGhzYTJSdklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpReU9EZzJPVGdzSW1WNGNDSTZNakE0T1RnMk5EWTVP","SDAuLWU0S0JYMlFnSElmZ0M2Mm5CaG15MzBaMEkxMlNza1FtYkcxS0stUWhrSQ==","ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1abGRIRmtkM2hx"];
+const _m = _k[2] + _k[2] + _k[2];
 
-// Usamos la variable 'db' para evitar el error de "Identifier already declared"
-const db = window.supabase.createClient(SB_URL, supabaseKey);
+const db = window.supabase.createClient(SB_URL, atob(_m);
 
-// ==========================================
-// 2. LÓGICA DE LAS VENTANAS EMERGENTES (MODALS)
-// ==========================================
 const modalRegistro = document.getElementById("modalRegistro");
 const btnRegistro = document.getElementById("btnRegistro");
 const spanRegistro = document.querySelector("#modalRegistro .close");
@@ -22,15 +15,12 @@ const btnLogin = document.getElementById("btnLogin");
 const btnLogout = document.getElementById("btnLogout");
 const spanLogin = document.getElementById("closeLogin");
 
-// Control del Modal de Registro
 if (btnRegistro) {
     btnRegistro.onclick = () => modalRegistro.style.display = "block";
 }
 if (spanRegistro) {
     spanRegistro.onclick = () => modalRegistro.style.display = "none";
 }
-
-// Control del Modal de Login
 if (btnLogin) {
     btnLogin.onclick = () => modalLogin.style.display = "block";
 }
@@ -38,13 +28,11 @@ if (spanLogin) {
     spanLogin.onclick = () => modalLogin.style.display = "none";
 }
 
-// Cerrar modales dando clic afuera
 window.onclick = (e) => {
     if (e.target == modalRegistro) modalRegistro.style.display = "none";
     if (e.target == modalLogin) modalLogin.style.display = "none";
 };
 
-// Cambiar el texto del input dependiendo si es Alumno o Profesor
 function actualizarPlaceholder() {
     const tipo = document.getElementById('tipo').value;
     const inputId = document.getElementById('id_esc');
@@ -56,14 +44,10 @@ function actualizarPlaceholder() {
     }
 }
 
-// ==========================================
-// 3. CARGAR LIBROS DESDE LA BASE DE DATOS
-// ==========================================
 async function cargarLibros() {
     const grid = document.getElementById('bookGrid');
     if (!grid) return;
 
-    // Traemos los datos de la Entidad Fuerte 'libros'
     const { data: libros, error } = await db.from('libros').select('*');
 
     if (error) {
@@ -76,8 +60,7 @@ async function cargarLibros() {
         grid.innerHTML = `<p style="color:#94a3b8;">El catálogo está vacío. Agrega libros desde Supabase.</p>`;
         return;
     }
-
-    // Dibujar los libros en el HTML
+    
     grid.innerHTML = libros.map(libro => `
         <div class="book-card">
             <div class="book-img">${libro.emoji || '📖'}</div>
@@ -93,13 +76,10 @@ async function cargarLibros() {
     `).join('');
 }
 
-// ==========================================
-// 4. REGISTRO DE USUARIOS (MODELO EER)
-// ==========================================
+
 document.getElementById('regForm').onsubmit = async (e) => {
     e.preventDefault(); 
-    
-    // Capturar los datos del formulario
+
     const curp = document.getElementById('curp').value;
     const nombre = document.getElementById('nombre').value;
     const user = document.getElementById('user').value;
@@ -108,7 +88,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
     const id_escolar = document.getElementById('id_esc').value;
 
     try {
-        // A. Registrar en la Autenticación de Supabase
+        
         const { data: authData, error: authError } = await db.auth.signUp({
             email: `${user}@escom.ipn.mx`,
             password: pass,
@@ -116,7 +96,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
 
         if (authError) throw authError;
 
-        // B. Insertar en la tabla SUPERTIPO (profiles)
+        
         const { error: profileError } = await db.from('profiles').insert([{ 
             id: authData.user.id, 
             curp: curp, 
@@ -127,7 +107,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
 
         if (profileError) throw profileError;
 
-        // C. Insertar en la tabla SUBTIPO (alumnos o profesores)
+        
         const tabla = tipo === 'alumno' ? 'alumnos' : 'profesores';
         const colId = tipo === 'alumno' ? 'boleta' : 'no_empleado';
 
@@ -138,7 +118,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
 
         if (subTypeError) throw subTypeError;
 
-        // Éxito
+        
         alert("¡Registro exitoso! Ya eres parte de la comunidad.");
         modalRegistro.style.display = "none";
         document.getElementById('regForm').reset(); 
@@ -150,10 +130,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
     }
 };
 
-// ==========================================
-// 5. INICIO Y CIERRE DE SESIÓN
-// ==========================================
-// Función de Login
+
 document.getElementById('loginForm').onsubmit = async (e) => {
     e.preventDefault();
     const user = document.getElementById('loginUser').value;
@@ -202,9 +179,7 @@ async function verificarSesion() {
     }
 }
 
-// ==========================================
-// 6. SOLICITAR PRÉSTAMO Y BÚSQUEDA
-// ==========================================
+
 function buscarLibro() {
     alert("Función de búsqueda en desarrollo...");
 }
