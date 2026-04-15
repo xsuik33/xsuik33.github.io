@@ -11,34 +11,40 @@ const supabaseKey = atob(llave_oculta);
 const db = window.supabase.createClient(SB_URL, supabaseKey);
 
 // ==========================================
-// 2. LÓGICA DE LA VENTANA EMERGENTE (MODAL)
+// 2. LÓGICA DE LAS VENTANAS EMERGENTES (MODALS)
 // ==========================================
-const modal = document.getElementById("modalRegistro");
-const btn = document.getElementById("btnRegistro");
-const span = document.querySelector(".close");
+const modalRegistro = document.getElementById("modalRegistro");
+const btnRegistro = document.getElementById("btnRegistro");
+const spanRegistro = document.querySelector("#modalRegistro .close");
 
-// Abrir el modal
-if (btn) {
-    btn.onclick = () => {
-        modal.style.display = "block";
-    };
+const modalLogin = document.getElementById("modalLogin");
+const btnLogin = document.getElementById("btnLogin");
+const btnLogout = document.getElementById("btnLogout");
+const spanLogin = document.getElementById("closeLogin");
+
+// Control del Modal de Registro
+if (btnRegistro) {
+    btnRegistro.onclick = () => modalRegistro.style.display = "block";
+}
+if (spanRegistro) {
+    spanRegistro.onclick = () => modalRegistro.style.display = "none";
 }
 
-// Cerrar el modal con la tachita
-if (span) {
-    span.onclick = () => {
-        modal.style.display = "none";
-    };
+// Control del Modal de Login
+if (btnLogin) {
+    btnLogin.onclick = () => modalLogin.style.display = "block";
+}
+if (spanLogin) {
+    spanLogin.onclick = () => modalLogin.style.display = "none";
 }
 
-// Cerrar el modal dando clic afuera
+// Cerrar modales dando clic afuera
 window.onclick = (e) => {
-    if (e.target == modal) {
-        modal.style.display = "none";
-    }
+    if (e.target == modalRegistro) modalRegistro.style.display = "none";
+    if (e.target == modalLogin) modalLogin.style.display = "none";
 };
 
-// Cambiar el texto del input dependiendo si es Alumno o Profesor [cite: 37, 82, 85]
+// Cambiar el texto del input dependiendo si es Alumno o Profesor
 function actualizarPlaceholder() {
     const tipo = document.getElementById('tipo').value;
     const inputId = document.getElementById('id_esc');
@@ -57,7 +63,7 @@ async function cargarLibros() {
     const grid = document.getElementById('bookGrid');
     if (!grid) return;
 
-    // Traemos los datos de la Entidad Fuerte 'libros' [cite: 134, 183]
+    // Traemos los datos de la Entidad Fuerte 'libros'
     const { data: libros, error } = await db.from('libros').select('*');
 
     if (error) {
@@ -79,7 +85,7 @@ async function cargarLibros() {
                 <h4>${libro.titulo}</h4>
                 <span><strong>${libro.autor}</strong></span>
                 <p style="color:#64748b; font-size:0.8rem; margin-top:5px;">${libro.genero || 'General'}</p>
-               <button class="btn-primary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;" onclick="solicitarPrestamo('${libro.isbn}')">
+                <button class="btn-primary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;" onclick="solicitarPrestamo('${libro.isbn}')">
                     Solicitar Préstamo
                 </button>
             </div>
@@ -91,7 +97,7 @@ async function cargarLibros() {
 // 4. REGISTRO DE USUARIOS (MODELO EER)
 // ==========================================
 document.getElementById('regForm').onsubmit = async (e) => {
-    e.preventDefault(); // Evita que la página se recargue
+    e.preventDefault(); 
     
     // Capturar los datos del formulario
     const curp = document.getElementById('curp').value;
@@ -110,7 +116,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
 
         if (authError) throw authError;
 
-        // B. Insertar en la tabla SUPERTIPO (profiles) [cite: 78, 189]
+        // B. Insertar en la tabla SUPERTIPO (profiles)
         const { error: profileError } = await db.from('profiles').insert([{ 
             id: authData.user.id, 
             curp: curp, 
@@ -121,7 +127,7 @@ document.getElementById('regForm').onsubmit = async (e) => {
 
         if (profileError) throw profileError;
 
-        // C. Insertar en la tabla SUBTIPO (alumnos o profesores) [cite: 80, 84, 190]
+        // C. Insertar en la tabla SUBTIPO (alumnos o profesores)
         const tabla = tipo === 'alumno' ? 'alumnos' : 'profesores';
         const colId = tipo === 'alumno' ? 'boleta' : 'no_empleado';
 
@@ -134,8 +140,9 @@ document.getElementById('regForm').onsubmit = async (e) => {
 
         // Éxito
         alert("¡Registro exitoso! Ya eres parte de la comunidad.");
-        modal.style.display = "none";
-        document.getElementById('regForm').reset(); // Limpiar el formulario
+        modalRegistro.style.display = "none";
+        document.getElementById('regForm').reset(); 
+        verificarSesion(); // Actualizar botones tras registrarse
         
     } catch (err) {
         alert("Error al registrar: " + err.message);
@@ -143,22 +150,73 @@ document.getElementById('regForm').onsubmit = async (e) => {
     }
 };
 
-// Función vacía para evitar el ReferenceError del botón de buscar
-function buscarLibro() {
-    alert("Función de búsqueda en desarrollo...");
-} // <-- Faltaba cerrar esta llave aquí
+// ==========================================
+// 5. INICIO Y CIERRE DE SESIÓN
+// ==========================================
+// Función de Login
+document.getElementById('loginForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const user = document.getElementById('loginUser').value;
+    const pass = document.getElementById('loginPass').value;
+
+    try {
+        const { data, error } = await db.auth.signInWithPassword({
+            email: `${user}@escom.ipn.mx`,
+            password: pass,
+        });
+
+        if (error) throw error;
+
+        alert("¡Bienvenido de nuevo!");
+        modalLogin.style.display = "none";
+        document.getElementById('loginForm').reset();
+        verificarSesion(); // Actualizar botones
+    } catch (err) {
+        alert("Error al entrar: " + err.message);
+    }
+};
+
+// Función para Cerrar Sesión
+if(btnLogout) {
+    btnLogout.onclick = async () => {
+        await db.auth.signOut();
+        alert("Sesión cerrada.");
+        verificarSesion(); // Actualizar botones
+    };
+}
+
+// Función para verificar la sesión y ocultar/mostrar botones en la Navbar
+async function verificarSesion() {
+    const { data: { session } } = await db.auth.getSession();
+    
+    if (session) {
+        // Si hay un usuario logueado, ocultar Login/Registro y mostrar Cerrar Sesión
+        if (btnLogin) btnLogin.style.display = "none";
+        if (btnRegistro) btnRegistro.style.display = "none";
+        if (btnLogout) btnLogout.style.display = "block";
+    } else {
+        // Si no hay sesión, mostrar Login/Registro y ocultar Cerrar Sesión
+        if (btnLogin) btnLogin.style.display = "block";
+        if (btnRegistro) btnRegistro.style.display = "block";
+        if (btnLogout) btnLogout.style.display = "none";
+    }
+}
 
 // ==========================================
-// 5. SOLICITAR PRÉSTAMO
+// 6. SOLICITAR PRÉSTAMO Y BÚSQUEDA
 // ==========================================
+function buscarLibro() {
+    alert("Función de búsqueda en desarrollo...");
+}
+
 window.solicitarPrestamo = async function(isbn) {
     try {
-        // 1. Verificar si hay un usuario conectado (Supabase inicia sesión automáticamente al registrarse)
+        // 1. Verificar si hay un usuario conectado
         const { data: { session } } = await db.auth.getSession();
         
         if (!session) {
-            alert("Debes registrarte o iniciar sesión para poder solicitar un libro.");
-            document.getElementById("modalRegistro").style.display = "block";
+            alert("Debes iniciar sesión para poder solicitar un libro.");
+            modalLogin.style.display = "block";
             return;
         }
 
@@ -205,9 +263,12 @@ window.solicitarPrestamo = async function(isbn) {
     }
 };
 
-// Ejecutar la carga de libros en cuanto el HTML esté listo
+// ==========================================
+// INICIALIZACIÓN
+// ==========================================
+// Ejecutar funciones en cuanto el HTML esté listo
 document.addEventListener('DOMContentLoaded', () => {
     cargarLibros();
-    // Asegurarnos de que el placeholder esté correcto al cargar
     actualizarPlaceholder();
+    verificarSesion(); // Verifica si alguien ya estaba logueado
 });
