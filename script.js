@@ -79,7 +79,7 @@ async function cargarLibros() {
                 <h4>${libro.titulo}</h4>
                 <span><strong>${libro.autor}</strong></span>
                 <p style="color:#64748b; font-size:0.8rem; margin-top:5px;">${libro.genero || 'General'}</p>
-                <button class="btn-primary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;">
+               <button class="btn-primary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;" onclick="solicitarPrestamo('${libro.isbn}')">
                     Solicitar Préstamo
                 </button>
             </div>
@@ -146,7 +146,64 @@ document.getElementById('regForm').onsubmit = async (e) => {
 // Función vacía para evitar el ReferenceError del botón de buscar
 function buscarLibro() {
     alert("Función de búsqueda en desarrollo...");
-}
+} // <-- Faltaba cerrar esta llave aquí
+
+// ==========================================
+// 5. SOLICITAR PRÉSTAMO
+// ==========================================
+window.solicitarPrestamo = async function(isbn) {
+    try {
+        // 1. Verificar si hay un usuario conectado (Supabase inicia sesión automáticamente al registrarse)
+        const { data: { session } } = await db.auth.getSession();
+        
+        if (!session) {
+            alert("Debes registrarte o iniciar sesión para poder solicitar un libro.");
+            document.getElementById("modalRegistro").style.display = "block";
+            return;
+        }
+
+        const idUsuario = session.user.id;
+
+        // 2. Buscar un ejemplar disponible de ese libro en el inventario físico
+        const { data: ejemplares, error: errEjemplar } = await db
+            .from('ejemplares')
+            .select('id_ejemplar')
+            .eq('isbn', isbn)
+            .limit(1);
+
+        if (errEjemplar) throw errEjemplar;
+        
+        if (!ejemplares || ejemplares.length === 0) {
+            alert("Lo sentimos, no hay copias físicas disponibles de este libro en este momento.");
+            return;
+        }
+
+        const idEjemplarFisico = ejemplares[0].id_ejemplar;
+
+        // 3. Calcular fechas (Hoy y fecha de entrega esperada en 7 días)
+        const fechaSalida = new Date();
+        const fechaEsperada = new Date();
+        fechaEsperada.setDate(fechaSalida.getDate() + 7);
+
+        // 4. Insertar el registro en la tabla 'prestamos'
+        const { error: errPrestamo } = await db
+            .from('prestamos')
+            .insert([{
+                id_usuario: idUsuario,
+                id_ejemplar: idEjemplarFisico,
+                fecha_salida: fechaSalida.toISOString().split('T')[0],
+                fecha_esperada: fechaEsperada.toISOString().split('T')[0]
+            }]);
+
+        if (errPrestamo) throw errPrestamo;
+
+        alert("¡Préstamo exitoso! Puedes pasar a recoger el libro. Tienes 7 días para devolverlo.");
+
+    } catch (err) {
+        console.error("Error al solicitar préstamo:", err);
+        alert("Ocurrió un error al procesar tu solicitud: " + err.message);
+    }
+};
 
 // Ejecutar la carga de libros en cuanto el HTML esté listo
 document.addEventListener('DOMContentLoaded', () => {
