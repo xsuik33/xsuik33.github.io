@@ -15,14 +15,6 @@
     box-sizing: border-box; 
     font-family: 'Plus Jakarta Sans', sans-serif; 
 }
-.modal {
-    display: none; 
-    position: fixed !important; 
-    z-index: 9999 !important; /* Valor muy alto para que salga al frente */
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.9);
-}
 
 body {
     background-color: var(--bg);
@@ -31,7 +23,9 @@ body {
     line-height: 1.6;
 }
 
-/* Navbar */
+/* ==========================================
+   BARRA DE NAVEGACIÓN (ALINEACIÓN PERFECTA)
+   ========================================== */
 .navbar {
     display: flex; 
     justify-content: space-between; 
@@ -48,16 +42,24 @@ body {
 .logo { font-size: 1.5rem; font-weight: 800; color: white; text-decoration: none; }
 .logo span { color: var(--primary); }
 
+/* Flexbox para que los links y botones nunca se encimen */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Separación uniforme entre cada elemento */
+}
+
 .nav-links a { 
     color: var(--text-dim); 
     text-decoration: none; 
-    margin-right: 25px; 
-    font-size: 0.9rem; 
+    font-size: 0.95rem; 
     transition: 0.3s;
 }
 .nav-links a:hover, .nav-links a.active { color: white; }
 
-/* Botones */
+/* ==========================================
+   BOTONES
+   ========================================== */
 .btn-primary {
     background: var(--primary);
     color: white;
@@ -67,6 +69,9 @@ body {
     font-weight: 700;
     cursor: pointer;
     transition: 0.3s;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn-primary:hover {
@@ -74,7 +79,29 @@ body {
     transform: translateY(-2px);
 }
 
-/* Hero Section */
+.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 1px solid var(--primary) !important;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-secondary:hover {
+    background: rgba(61, 90, 254, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+#btnLogout {
+    background: var(--error) !important;
+}
+
+/* ==========================================
+   HERO & SEARCH BAR
+   ========================================== */
 .hero { padding: 80px 10% 40px; text-align: center; }
 .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -1px; }
 .hero p { color: var(--text-dim); font-size: 1.1rem; max-width: 600px; margin: 0 auto 40px; }
@@ -99,13 +126,26 @@ body {
     font-size: 1rem;
 }
 
-/* Contenedor y Grid */
+.search-bar button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ==========================================
+   CONTENEDOR Y GRID (CATÁLOGO)
+   ========================================== */
 .container { padding: 40px 10%; }
 
 .stats {
     display: flex; 
     gap: 30px; 
     margin-bottom: 60px;
+    flex-wrap: wrap; /* Evita que las tarjetas se apachurren en pantallas chicas */
 }
 
 .stat-card {
@@ -114,13 +154,15 @@ body {
     border-radius: 16px;
     border-left: 4px solid var(--primary);
     flex: 1;
+    min-width: 200px;
 }
+
+.section-title { margin-bottom: 30px; }
 
 .grid {
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px; 
-    margin-top: 40px;
 }
 
 .book-card {
@@ -129,6 +171,8 @@ body {
     border-radius: 24px; 
     overflow: hidden;
     transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
 }
 
 .book-card:hover { 
@@ -147,39 +191,66 @@ body {
     font-size: 4.5rem;
 }
 
-.book-info { padding: 25px; }
+.book-info { 
+    padding: 25px; 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+}
 .book-info h4 { font-size: 1.2rem; margin-bottom: 8px; }
-.book-info span { color: var(--text-dim); display: block; margin-bottom: 15px; }
+.book-info span { color: var(--text-dim); display: block; margin-bottom: 5px; }
 
-/* MODAL - VENTANA EMERGENTE CORREGIDA */
+.book-info button {
+    margin-top: auto; /* Empuja el botón siempre hasta abajo para que se alineen */
+}
+
+/* ==========================================
+   VENTANAS EMERGENTES (MODALS) CENTRADAS
+   ========================================== */
 .modal {
     display: none; 
     position: fixed; 
     z-index: 2000; 
     left: 0; 
     top: 0; 
-    width: 100%; 
-    height: 100%; 
+    width: 100vw; 
+    height: 100vh; 
     background-color: rgba(0, 0, 0, 0.85); 
-    backdrop-filter: blur(12px); /* Desenfoque de fondo pro */
+    backdrop-filter: blur(8px);
+    overflow: auto;
 }
 
 .modal-content {
     background-color: var(--surface);
-    margin: 5vh auto;
     padding: 40px;
     border: 1px solid var(--card-border);
     border-radius: 28px;
     width: 90%;
-    max-width: 480px;
+    max-width: 450px;
     box-shadow: 0 25px 50px rgba(0,0,0,0.6);
-    position: relative;
-    animation: modalAppear 0.4s ease-out;
+    
+    /* Magia para centrar perfectamente sin encimarse */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: modalAppear 0.3s ease-out;
+}
+
+/* Ajuste por si la pantalla es muy chaparrita (ej. laptops pequeñas) */
+@media (max-height: 750px) {
+    .modal-content {
+        position: relative;
+        top: 5vh;
+        left: auto;
+        transform: none;
+        margin: 0 auto 5vh auto;
+    }
 }
 
 @keyframes modalAppear {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translate(-50%, -45%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
 }
 
 .close {
@@ -191,11 +262,12 @@ body {
     font-weight: bold;
     cursor: pointer;
     transition: 0.2s;
+    line-height: 1;
 }
 .close:hover { color: white; }
 
 /* Formulario dentro del Modal */
-#regForm input, #regForm select {
+#regForm input, #regForm select, #loginForm input {
     width: 100%;
     padding: 14px;
     margin: 10px 0;
@@ -204,9 +276,10 @@ body {
     border-radius: 12px;
     color: white;
     font-size: 0.95rem;
+    box-sizing: border-box; /* Previene desbordes fuera de la caja */
 }
 
-#regForm input:focus {
+#regForm input:focus, #regForm select:focus, #loginForm input:focus {
     border-color: var(--primary);
     outline: none;
     background: #1c2128;
@@ -218,28 +291,4 @@ body {
     margin-top: 15px;
     display: block;
     font-weight: 600;
-}
-/* --- FIX DE EMERGENCIA PARA EL MODAL --- */
-#modalRegistro {
-    display: none; /* Se activa con JS */
-    position: fixed !important; /* !important obliga a que ignore otros estilos */
-    z-index: 9999 !important; 
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.9) !important;
-    backdrop-filter: blur(15px);
-    overflow-y: auto; /* Por si el cel es chico y el form es largo */
-}
-
-.modal-content {
-    background-color: #0f121a !important;
-    margin: 50px auto !important; /* Lo separa del tope */
-    padding: 30px !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    border-radius: 20px !important;
-    max-width: 450px !important;
-    position: relative !important;
-    display: block !important; /* Evita que se hereden flexbox raros */
 }
