@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BiblioTech | Gestión de Biblioteca ESCOM</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+    
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,11 +12,18 @@
 
     <nav class="navbar">
         <div class="logo">Biblio<span>Tech</span></div>
+        
+        <div class="nav-search">
+            <input type="text" id="navSearchInput" placeholder="Buscar título, autor o ISBN...">
+            <button onclick="buscarLibro()">🔍</button>
+        </div>
+
         <div class="nav-links">
             <a href="#" class="active">Catálogo</a>
             <a href="#">Préstamos</a>
             <a href="#">Comunidad</a>
-            <button class="btn-secondary" id="btnLogin" style="background:transparent; color:white; border:1px solid var(--primary); padding:10px 20px; border-radius:10px; cursor:pointer; margin-right:10px;">Login</button>
+            <button class="btn-secondary" id="btnTheme" style="border: none !important; font-size: 1.2rem; padding: 5px 10px; min-width: auto;" title="Cambiar Tema">🌓</button>
+            <button class="btn-secondary" id="btnLogin" style="background:transparent; color:var(--text-main); border:1px solid var(--primary); padding:10px 20px; border-radius:10px; cursor:pointer; margin-right:10px;">Login</button>
             <button class="btn-primary" id="btnRegistro">+ Registro</button>
             <button class="btn-primary" id="btnLogout" style="display:none; background:var(--error); margin-left:10px;">Cerrar Sesión</button>
         </div>
@@ -24,7 +32,7 @@
     <header class="hero">
         <div class="hero-content">
             <h1>Tu biblioteca, reinventada.</h1>
-            <p>Gestión inteligente para el acervo cultural de la comunidad politécnica.</p>
+            <p>Explora millones de ejemplares en la red global o solicita préstamos físicos del acervo local.</p>
             <div class="search-bar">
                 <input type="text" id="searchInput" placeholder="Buscar por título, autor o categoría...">
                 <button onclick="buscarLibro()">Buscar</button>
@@ -33,52 +41,156 @@
     </header>
 
     <main class="container">
-        <section class="stats">
-            <div class="stat-card"><h3>1,250</h3><p>Libros Totales</p></div>
-            <div class="stat-card"><h3>45</h3><p>Prestados hoy</p></div>
-            <div class="stat-card"><h3>12</h3><p>Nuevos ingresos</p></div>
+        
+        <section class="welcome-banner">
+            <div class="welcome-card">
+                <div class="welcome-icon">🖥️</div>
+                <div class="welcome-info">
+                    <h3>Descubre libros en línea</h3>
+                    <p>Millones de libros disponibles a través del catálogo digital interconectado.</p>
+                </div>
+            </div>
+            <div class="welcome-card">
+                <div class="welcome-icon">🎯</div>
+                <div class="welcome-info">
+                    <h3>Establece objetivos de lectura</h3>
+                    <p>Aprende a establecer una meta anual y haz seguimiento de tu progreso académico.</p>
+                </div>
+            </div>
+            <div class="welcome-card">
+                <div class="welcome-icon">📚</div>
+                <div class="welcome-info">
+                    <h3>Organiza tus favoritos</h3>
+                    <p>Sigue el rastro de tus ejemplares preferidos usando las listas de lectura.</p>
+                </div>
+            </div>
         </section>
 
-        <div class="section-title">
-            <h2>Colección de Autores Imprescindibles</h2>
-            <div class="line" style="width: 50px; height: 4px; background: #3d5afe; border-radius: 2px; margin-top: 10px;"></div>
-        </div>
+        <div class="shelf-section">
+            <div class="section-title">
+                <h2 id="tituloCatalogo">Libros en tendencia</h2>
+                <div class="line" style="width: 50px; height: 4px; background: #3d5afe; border-radius: 2px; margin-top: 10px;"></div>
+            </div>
 
-        <div class="grid" id="bookGrid"></div>
+            <div class="shelf-container">
+                <div class="shelf" id="bookGrid"></div>
+            </div>
+
+            <div id="paginacion" class="pagination-container"></div>
+        </div>
     </main>
+
+    <div id="modalDetalle" class="modal">
+        <div class="modal-content modal-extralarge">
+            <span class="close" id="closeDetalle">&times;</span>
+            
+            <div class="open-library-layout">
+                <div class="ol-left-col">
+                    <img id="detallePortada" src="" alt="Portada" class="ol-cover">
+                    <button class="btn-primary ol-btn" id="btnBuscarLinea">Buscar en línea ↗</button>
+                    <button class="btn-secondary ol-btn" id="btnSolicitar">Solicitar Préstamo Físico</button>
+                </div>
+                
+                <div class="ol-right-col">
+                    <h2 id="detalleTitulo">Título del Libro</h2>
+                    <h4 class="ol-author">de <span id="detalleAutor">Autor</span></h4>
+                    
+                    <div class="ol-rating">
+                        ⭐⭐⭐⭐⭐ <span style="color:var(--text-dim); margin-left:10px;" id="detalleIsbn">ISBN</span>
+                    </div>
+
+                    <p class="ol-description">
+                        Este ejemplar se muestra a través del catálogo global. Consulta los detalles de publicación y verifica la disponibilidad física para recogerlo en mostrador en caso de pertenecer al acervo local.
+                    </p>
+
+                    <div class="ol-info-grid">
+                        <div class="ol-info-box">
+                            <span>Fecha de publicación</span>
+                            <strong id="detalleFecha">--</strong>
+                        </div>
+                        <div class="ol-info-box">
+                            <span>Editorial</span>
+                            <strong id="detalleEditorial">--</strong>
+                        </div>
+                        <div class="ol-info-box">
+                            <span>Idioma</span>
+                            <strong id="detalleIdioma">--</strong>
+                        </div>
+                        <div class="ol-info-box">
+                            <span>Páginas</span>
+                            <strong id="detallePaginas">--</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="modalRegistro" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Registro Comunidad IPN</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Crea tu cuenta con seguridad en la nube.</p>
-            
+            <p style="color: var(--text-dim); margin-bottom: 20px;">Crea tu cuenta con seguridad en la nube.</p>
             <form id="regForm">
                 <input type="text" id="curp" placeholder="CURP (18 caracteres)" required maxlength="18">
                 <input type="text" id="nombre" placeholder="Nombre Completo" required>
-                <input type="text" id="user" placeholder="Nombre de Usuario (ej. saul01)" required>
+                <input type="text" id="user" placeholder="Nombre de Usuario" required>
                 <input type="password" id="pass" placeholder="Contraseña" required>
-                
-                <label style="display:block; margin-top:10px; font-size:0.8rem; color:#3d5afe">Selecciona tu Rol:</label>
+                <label style="display:block; margin-top:10px; font-size:0.8rem; color:var(--primary)">Selecciona tu Rol:</label>
                 <select id="tipo" onchange="actualizarPlaceholder()">
                     <option value="alumno">Alumno</option>
                     <option value="profesor">Profesor</option>
                 </select>
-                
                 <input type="text" id="id_esc" placeholder="Número de Boleta" required>
                 <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Registrar en Supabase</button>
             </form>
         </div>
     </div>
-
+<footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Biblioteca ESCOM</h4>
+                <a href="vision.html">Nuestra Visión</a>
+                <a href="voluntariado.html">Voluntariado</a>
+                <a href="reglamento.html">Reglamento de Biblioteca</a>
+                <a href="terminos.html">Términos de servicio</a>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Descubrir</h4>
+                <a href="#">Inicio del Catálogo</a>
+                <a href="#">Autores destacados</a>
+                <a href="#">Ingeniería en Sistemas</a>
+                <a href="#">Programación C++ y Java</a>
+                <a href="#">Diseño VHDL y Hardware</a>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Desarrollo</h4>
+                <a href="#">Documentación de la API</a>
+                <a href="#">Repositorio en GitHub</a>
+                <div class="team-credits">
+                    <span style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 0.85rem; text-transform: uppercase;">Equipo de Desarrollo:</span>
+                    <p>Iker Saul Gonzalez Ortiz</p>
+                    <p>Juárez Bobadilla Miguel Isaí</p>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Cambiar idioma</h4>
+                <a href="#" onclick="cambiarIdioma('es')" id="lang-es" class="lang-active">Español (es)</a>
+                <a href="#" onclick="cambiarIdioma('en')" id="lang-en">English (en)</a>
+                <a href="#" onclick="cambiarIdioma('fr')" id="lang-fr">Français (fr)</a>
+            </div>
+        </div>
+    </footer>
     <div id="modalLogin" class="modal">
         <div class="modal-content">
             <span class="close" id="closeLogin">&times;</span>
             <h2>Iniciar Sesión</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Ingresa tus credenciales de la ESCOM.</p>
-            
+            <p style="color: var(--text-dim); margin-bottom: 20px;">Ingresa tus credenciales de la ESCOM.</p>
             <form id="loginForm">
-                <input type="text" id="loginUser" placeholder="Nombre de Usuario (ej. saul01)" required>
+                <input type="text" id="loginUser" placeholder="Nombre de Usuario" required>
                 <input type="password" id="loginPass" placeholder="Contraseña" required>
                 <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Entrar al Sistema</button>
             </form>
