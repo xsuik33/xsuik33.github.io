@@ -309,7 +309,7 @@ window.buscarLibro = async function() {
     if(tituloCatalogo) tituloCatalogo.innerText = "Buscando resultados...";
 
     try {
-        const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(termino)}&limit=300`);
+        const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(termino)}&limit=300000`);
         const data = await response.json();
         
         if (!data.docs || data.docs.length === 0) {
