@@ -411,8 +411,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(btnLogout) btnLogout.onclick = async () => { await db.auth.signOut(); alert("Sesión cerrada."); verificarSesion(); };
 
-    // Failsafe de Arranque por Página
-    if (document.getElementById('tituloCatalogo')) { cargarLibros(); }
+    // ==========================================
+    // INICIALIZACIÓN CRUZADA (CROSS-PAGE SEARCH)
+    // ==========================================
+    // Solo ejecutamos lógica de catálogo si estamos en el index
+    if (document.getElementById('tituloCatalogo')) {
+        const busquedaPendiente = localStorage.getItem('busquedaInmediata');
+        if (busquedaPendiente) {
+            localStorage.removeItem('busquedaInmediata');
+            if (inputNav) inputNav.value = busquedaPendiente;
+            if (inputHero) inputHero.value = busquedaPendiente;
+            buscarLibro();
+        } else {
+            cargarLibros();
+        }
+    }
+    
     const tipoSelect = document.getElementById('tipo');
     if (tipoSelect) { tipoSelect.onchange = actualizarPlaceholder; actualizarPlaceholder(); }
     verificarSesion();
