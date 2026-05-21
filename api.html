@@ -4,117 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentación API | BiblioTech</title>
+    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        .code-block {
-            background: #1a1c23;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
+        .code-container {
+            background: var(--surface-alt);
+            padding: 24px;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary);
             font-family: 'Courier New', Courier, monospace;
-            color: #d1d5db;
-            margin: 20px 0;
+            color: #cbd5e1;
+            margin: 20px 0 35px 0;
             overflow-x: auto;
+            font-size: 0.95rem;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
         }
-        .highlight { color: #3d5afe; font-weight: bold; }
+        .code-keyword { color: var(--primary); font-weight: 600; }
+        .code-string { color: #a88544; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-    <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Biblio<span>Tech</span></a></div>
-    <div class="nav-links">
-        <a href="index.html" id="nav-catalogo">Catálogo</a>
-        <a href="#">Préstamos</a>
-        <a href="#">Comunidad</a>
-        <button class="btn-secondary" id="btnLogin" style="background:transparent; color:white; border:1px solid var(--primary); padding:10px 20px; border-radius:10px; cursor:pointer;">Login</button>
-    </div>
-</nav>
-
-    <main class="container" style="max-width: 850px; margin: 60px auto; min-height: 60vh;">
+        <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Biblio<span>Tech</span></a></div>
         
-        <div class="section-title">
-            <h1 style="font-size: 2.5rem; color: var(--text-main);">Documentación de la API</h1>
-            <p style="color: var(--text-dim);">Guía técnica para la integración con el backend de Supabase.</p>
+        <div class="nav-search">
+            <input type="text" id="navSearchInput" placeholder="Buscar título, autor o ISBN...">
+            <button onclick="localStorage.setItem('busquedaInmediata', document.getElementById('navSearchInput').value); window.location.href='index.html';">🔍</button>
         </div>
 
-        <div style="margin-top: 40px; color: var(--text-main);">
-            <h2>1. Conexión al Cliente</h2>
-            <p>BiblioTech utiliza el cliente oficial de Supabase. Para inicializar la conexión en tu proyecto, usa el siguiente script:</p>
-            <div class="code-block">
-                const <span class="highlight">db</span> = window.supabase.createClient(SB_URL, supabaseKey);
+        <div class="nav-links">
+            <a href="index.html" id="nav-catalogo">Catálogo</a>
+            <a href="#" id="nav-prestamos">Préstamos</a>
+            <a href="#" id="nav-comunidad">Comunidad</a>
+            <button class="btn-secondary" id="btnTheme" style="border: none !important; font-size: 1.2rem; padding: 5px 10px; min-width: auto;" title="Cambiar Tema">🌓</button>
+            <button class="btn-secondary" id="btnLogin" style="background:transparent; color:var(--text-main); border:1px solid var(--primary); padding:10px 20px; border-radius:10px; cursor:pointer; margin-right:10px;">Login</button>
+            <button class="btn-primary" id="btnRegistro">+ Registro</button>
+            <button class="btn-primary" id="btnLogout" style="display:none; background:var(--error); margin-left:10px;">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <main class="container" style="max-width: 850px; margin: 50px auto; min-height: 55vh;">
+        <div class="section-title">
+            <h1 style="font-size: 2.8rem; color: var(--text-main);">Documentación de la API</h1>
+            <div class="line" style="width: 80px; height: 2px; background: var(--primary); margin-top: 10px;"></div>
+        </div>
+
+        <div style="margin-top: 35px; color: var(--text-main);">
+            <p style="margin-bottom: 25px; color: var(--text-dim); font-size: 1.1rem;">Esquema de integración y consultas asíncronas para el ecosistema de base de datos distribuidas en Supabase.</p>
+
+            <h2 style="font-size: 1.5rem; margin-bottom: 10px;">1. Inicialización de la Base de Datos</h2>
+            <p>La pasarela asíncrona requiere instanciar el cliente centralizado inyectando las constantes seguras decodificadas de la memoria interna:</p>
+            <div class="code-container">
+                <span class="code-keyword">const</span> db = window.supabase.<span class="code-keyword">createClient</span>(SB_URL, supabaseKey);
             </div>
 
-            <h2>2. Consulta de Catálogo</h2>
-            <p>Para obtener todos los libros registrados en la tabla <span style="color:var(--primary)">'libros'</span>:</p>
-            <div class="code-block">
-                const { data, error } = await <span class="highlight">db</span><br>
-                &nbsp;&nbsp;.from('libros')<br>
-                &nbsp;&nbsp;.select('*');
+            <h2 style="font-size: 1.5rem; margin-bottom: 10px;">2. Extracción de Catálogo Local</h2>
+            <p>Para mapear los registros persistidos en el esquema relacional local sin filtros restrictivos artificiales:</p>
+            <div class="code-container">
+                <span class="code-keyword">const</span> { data, error } = <span class="code-keyword">await</span> db<br>
+                &nbsp;&nbsp;.<span class="code-keyword">from</span>(<span class="code-string">'libros'</span>)<br>
+                &nbsp;&nbsp;.<span class="code-keyword">select</span>(<span class="code-string">'*'</span>);
             </div>
 
-            <h2>3. Lógica de Préstamos</h2>
-            <p>El sistema calcula automáticamente la fecha de entrega sumando 7 días a la fecha actual:</p>
-            <div class="code-block">
-                fechaEsperada.setDate(fechaSalida.getDate() + 7);<br>
-                <span class="highlight">db</span>.from('prestamos').insert([{...}]);
+            <h2 style="font-size: 1.5rem; margin-bottom: 10px;">3. Inserción Automática de Préstamos</h2>
+            <p>Estructura modular requerida para efectuar la solicitud física e insertar las marcas de tiempo calculadas para la devolución a los 7 días naturales:</p>
+            <div class="code-container">
+                fechaEsperada.<span class="code-keyword">setDate</span>(fechaSalida.<span class="code-keyword">getDate</span>() + <span class="code-keyword">7</span>);<br><br>
+                <span class="code-keyword">await</span> db.<span class="code-keyword">from</span>(<span class="code-string">'prestamos'</span>).<span class="code-keyword">insert</span>([{<br>
+                &nbsp;&nbsp;id_usuario: idUsuario,<br>
+                &nbsp;&nbsp;id_ejemplar: idEjemplarFisico,<br>
+                &nbsp;&nbsp;fecha_salida: fechaSalida.<span class="code-keyword">toISOString</span>().<span class="code-keyword">split</span>(<span class="code-string">'T'</span>)[0],<br>
+                &nbsp;&nbsp;fecha_esperada: fechaEsperada.<span class="code-keyword">toISOString</span>().<span class="code-keyword">split</span>(<span class="code-string">'T'</span>)[0]<br>
+                }]);
             </div>
         </div>
     </main>
 
     <footer class="site-footer">
-            <div class="footer-container">
-                <div class="footer-col">
-                    <h4>Biblioteca ESCOM</h4>
-                    <a href="vision.html">Nuestra Visión</a>
-                    <a href="voluntariado.html">Voluntariado</a>
-                    <a href="reglamento.html">Reglamento de Biblioteca</a>
-                    <a href="terminos.html">Términos de servicio</a>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Descubrir</h4>
-                    <a href="#">Inicio del Catálogo</a>
-                    <a href="#">Autores destacados</a>
-                    <a href="#">Ingeniería en Sistemas</a>
-                    <a href="#">Programación C++ y Java</a>
-                    <a href="#">Diseño VHDL y Hardware</a>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Desarrollo</h4>
-                    <a href="api.html">Documentación de la API</a>
-                    <a href="#">Repositorio en GitHub</a>
-                    <div class="team-credits">
-                        <span style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 0.85rem; text-transform: uppercase;">Equipo de Desarrollo:</span>
-                        <p>Iker Saul Gonzalez Ortiz</p>
-                        <p>Juárez Bobadilla Miguel Isaí</p>
-                    </div>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Cambiar idioma</h4>
-                    <a href="#" onclick="cambiarIdioma('es')" id="lang-es" class="lang-active">Español (es)</a>
-                    <a href="#" onclick="cambiarIdioma('en')" id="lang-en">English (en)</a>
-                    <a href="#" onclick="cambiarIdioma('fr')" id="lang-fr">Français (fr)</a>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Biblioteca ESCOM</h4>
+                <a href="vision.html">Nuestra Visión</a>
+                <a href="#">Voluntariado</a>
+                <a href="reglamento.html">Reglamento de Biblioteca</a>
+                <a href="#">Términos de servicio</a>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Descubrir</h4>
+                <a href="index.html">Inicio del Catálogo</a>
+                <a href="#">Autores destacados</a>
+                <a href="#">Ingeniería en Sistemas</a>
+                <a href="#">Programación C++ y Java</a>
+                <a href="#">Diseño VHDL y Hardware</a>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Desarrollo</h4>
+                <a href="api.html" class="lang-active">Documentación de la API</a>
+                <a href="#">Repositorio en GitHub</a>
+                <div class="team-credits">
+                    <span style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 0.85rem; text-transform: uppercase;">Equipo de Desarrollo:</span>
+                    <p>Iker Saul Gonzalez Ortiz</p>
+                    <p>Diego Enrique Romero Martínez</p>
+                    <p>José Emanuel Barrera Guerrero</p>
                 </div>
             </div>
-        </footer>
-        <div id="modalLogin" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeLogin">&times;</span>
-                <h2>Iniciar Sesión</h2>
-                <p style="color: var(--text-dim); margin-bottom: 20px;">Ingresa tus credenciales de la ESCOM.</p>
-                <form id="loginForm">
-                    <input type="text" id="loginUser" placeholder="Nombre de Usuario" required>
-                    <input type="password" id="loginPass" placeholder="Contraseña" required>
-                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Entrar al Sistema</button>
-                </form>
+            
+            <div class="footer-col">
+                <h4>Cambiar idioma</h4>
+                <a href="#" onclick="cambiarIdioma('es')" id="lang-es" class="lang-active">Español (es)</a>
+                <a href="#" onclick="cambiarIdioma('en')" id="lang-en">English (en)</a>
+                <a href="#" onclick="cambiarIdioma('fr')" id="lang-fr">Français (fr)</a>
             </div>
         </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
     
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script src="script.js"></script>
-    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputNav = document.getElementById('navSearchInput');
+            if (inputNav) {
+                inputNav.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        localStorage.setItem('busquedaInmediata', inputNav.value);
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
 </html>
