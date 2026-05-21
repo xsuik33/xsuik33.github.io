@@ -1,15 +1,31 @@
-
 // ==========================================
-// 1. DE ASCII A BASE 64
+// 1. CONFIGURACIÓN SUPABASE (Ofuscación BigInt Matemático)
 // ==========================================
-
 const SB_URL = 'https://fetqdwxjgwqveqpxlkdo.supabase.co'; 
-const llave_oculta = "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1abGRIRmtkM2hxWjNkeGRtVnhjSGhzYTJSdklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpReU9EZzJPVGdzSW1WNGNDSTZNakE0T1RnMk5EWTVPSDAuLWU0S0JYMlFnSElmZ0M2Mm5CaG15MzBaMEkxMlNza1FtYkcxS0stUWhrSQ==";
 
-const supabaseKey = atob(llave_oculta);
+// Tu API Key convertida en un solo número entero (BigInt)
+const giantKey = 325107289943835301567169038289173430989254416265133392209669403326094547422214826592573882541857042746475474739664941699678552908563995303252367141130785312117166904182578356924241785328077950361964713989504540355576217469036450604467145256017935657916405186645142292670773303220091267794886182181714065369188973928640335019287986385114043370384847675443579163196568799372128368184223093341427532127181163034075360487414185405085577211299591629441881207934823756263490690882223954435371781977843198793n;
 
+//  Convertimos el súper número de regreso a Hexadecimal (Base 16)
+let hexString = giantKey.toString(16);
+
+// Por si el número perdió un cero a la izquierda, lo rellenamos para que sean pares exactos
+if (hexString.length % 2 !== 0) {
+    hexString = '0' + hexString;
+}
+
+// Traducimos los pares hexadecimales a las letras de tu llave JWT
+let supabaseKey = '';
+for (let i = 0; i < hexString.length; i += 2) {
+    supabaseKey += String.fromCharCode(parseInt(hexString.substr(i, 2), 16));
+}
+
+// Inicializamos la base de datos
 const db = window.supabase.createClient(SB_URL, supabaseKey);
 
+// ==========================================
+// 2. LÓGICA DE LAS VENTANAS EMERGENTES (MODALS)
+// ==========================================
 const modalRegistro = document.getElementById("modalRegistro");
 const btnRegistro = document.getElementById("btnRegistro");
 const spanRegistro = document.querySelector("#modalRegistro .close");
@@ -18,6 +34,10 @@ const modalLogin = document.getElementById("modalLogin");
 const btnLogin = document.getElementById("btnLogin");
 const btnLogout = document.getElementById("btnLogout");
 const spanLogin = document.getElementById("closeLogin");
+
+// Nuevas variables para el Modal de Detalles (Estilo Open Library)
+const modalDetalle = document.getElementById("modalDetalle");
+const spanDetalle = document.getElementById("closeDetalle");
 
 // Control del Modal de Registro
 if (btnRegistro) {
@@ -35,10 +55,16 @@ if (spanLogin) {
     spanLogin.onclick = () => modalLogin.style.display = "none";
 }
 
+// Control del Modal de Detalles
+if (spanDetalle) {
+    spanDetalle.onclick = () => modalDetalle.style.display = "none";
+}
+
 // Cerrar modales dando clic afuera
 window.onclick = (e) => {
     if (e.target == modalRegistro) modalRegistro.style.display = "none";
     if (e.target == modalLogin) modalLogin.style.display = "none";
+    if (e.target == modalDetalle) modalDetalle.style.display = "none"; // Agregado aquí
 };
 
 // Cambiar el texto del input dependiendo si es Alumno o Profesor
@@ -74,21 +100,51 @@ async function cargarLibros() {
         return;
     }
 
-    // Dibujar los libros en el HTML
-    grid.innerHTML = libros.map(libro => `
+    // Dibujar los libros en el HTML usando portadas de Open Library
+    grid.innerHTML = libros.map(libro => {
+        // Generamos la URL. Si no hay ISBN o falla, usamos un placeholder.
+        const portadaUrl = libro.isbn 
+            ? `https://covers.openlibrary.org/b/isbn/${libro.isbn}-M.jpg` 
+            : 'https://via.placeholder.com/200x300/1a1e29/ffffff?text=Sin+Portada';
+
+        return `
         <div class="book-card">
-            <div class="book-img">${libro.emoji || '📖'}</div>
+            <img src="${portadaUrl}" alt="Portada de ${libro.titulo}" class="book-cover-img" 
+                 onerror="this.src='https://via.placeholder.com/200x300/1a1e29/ffffff?text=Sin+Portada'">
+            
             <div class="book-info">
-                <h4>${libro.titulo}</h4>
-                <span><strong>${libro.autor}</strong></span>
+                <h4 title="${libro.titulo}">${libro.titulo}</h4>
+                <span title="${libro.autor}"><strong>${libro.autor}</strong></span>
                 <p style="color:#64748b; font-size:0.8rem; margin-top:5px;">${libro.genero || 'General'}</p>
-                <button class="btn-primary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;" onclick="solicitarPrestamo('${libro.isbn}')">
-                    Solicitar Préstamo
+                
+                <button class="btn-secondary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;" 
+                        onclick="abrirDetalles('${libro.isbn}', '${libro.titulo.replace(/'/g, "\\'")}', '${libro.autor.replace(/'/g, "\\'")}', '${portadaUrl}')">
+                    Ver Detalles
                 </button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
+
+// ==========================================
+// ABRIR DETALLES DEL LIBRO (NUEVO MODAL)
+// ==========================================
+window.abrirDetalles = function(isbn, titulo, autor, portadaUrl) {
+    document.getElementById("detalleTitulo").innerText = titulo;
+    document.getElementById("detalleAutor").innerText = autor;
+    document.getElementById("detalleIsbn").innerText = isbn || "No asignado";
+    document.getElementById("detallePortada").src = portadaUrl;
+
+    // Configurar el botón para que ejecute tu lógica original de préstamo
+    const btnSolicitar = document.getElementById("btnSolicitar");
+    btnSolicitar.onclick = () => {
+        solicitarPrestamo(isbn);
+        modalDetalle.style.display = "none";
+    };
+
+    modalDetalle.style.display = "block";
+};
 
 // ==========================================
 // 4. REGISTRO DE USUARIOS (MODELO EER)
