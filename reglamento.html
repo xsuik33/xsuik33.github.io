@@ -64,16 +64,57 @@
     </main>
 
     <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-col">
-                <h4>Biblioteca ESCOM</h4>
-                <a href="vision.html">Nuestra Visión</a>
-                <a href="#">Voluntariado</a>
-                <a href="reglamento.html" style="color: var(--primary);">Reglamento de Biblioteca</a>
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h4>Biblioteca ESCOM</h4>
+                    <a href="vision.html">Nuestra Visión</a>
+                    <a href="voluntariado.html">Voluntariado</a>
+                    <a href="reglamento.html">Reglamento de Biblioteca</a>
+                    <a href="terminos.html">Términos de servicio</a>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Descubrir</h4>
+                    <a href="#">Inicio del Catálogo</a>
+                    <a href="#">Autores destacados</a>
+                    <a href="#">Ingeniería en Sistemas</a>
+                    <a href="#">Programación C++ y Java</a>
+                    <a href="#">Diseño VHDL y Hardware</a>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Desarrollo</h4>
+                    <a href="#">Documentación de la API</a>
+                    <a href="#">Repositorio en GitHub</a>
+                    <div class="team-credits">
+                        <span style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 0.85rem; text-transform: uppercase;">Equipo de Desarrollo:</span>
+                        <p>Iker Saul Gonzalez Ortiz</p>
+                        <p>Juárez Bobadilla Miguel Isaí</p>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Cambiar idioma</h4>
+                    <a href="#" onclick="cambiarIdioma('es')" id="lang-es" class="lang-active">Español (es)</a>
+                    <a href="#" onclick="cambiarIdioma('en')" id="lang-en">English (en)</a>
+                    <a href="#" onclick="cambiarIdioma('fr')" id="lang-fr">Français (fr)</a>
+                </div>
             </div>
+        </footer>
+        <div id="modalLogin" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeLogin">&times;</span>
+                <h2>Iniciar Sesión</h2>
+                <p style="color: var(--text-dim); margin-bottom: 20px;">Ingresa tus credenciales de la ESCOM.</p>
+                <form id="loginForm">
+                    <input type="text" id="loginUser" placeholder="Nombre de Usuario" required>
+                    <input type="password" id="loginPass" placeholder="Contraseña" required>
+                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Entrar al Sistema</button>
+                </form>
             </div>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
+        </div>
+    
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="script.js"></script>
+    </body>
 </html>
