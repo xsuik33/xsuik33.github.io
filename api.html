@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación API | BiblioTech</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1a1c23;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            font-family: 'Courier New', Courier, monospace;
+            color: #d1d5db;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .highlight { color: #3d5afe; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Biblio<span>Tech</span></a></div>
+        <div class="nav-links">
+            <a href="index.html">Catálogo</a>
+            <a href="#">Préstamos</a>
+            <a href="#">Comunidad</a>
+        </div>
+    </nav>
+
+    <main class="container" style="max-width: 850px; margin: 60px auto; min-height: 60vh;">
+        
+        <div class="section-title">
+            <h1 style="font-size: 2.5rem; color: var(--text-main);">Documentación de la API</h1>
+            <p style="color: var(--text-dim);">Guía técnica para la integración con el backend de Supabase.</p>
+        </div>
+
+        <div style="margin-top: 40px; color: var(--text-main);">
+            <h2>1. Conexión al Cliente</h2>
+            <p>BiblioTech utiliza el cliente oficial de Supabase. Para inicializar la conexión en tu proyecto, usa el siguiente script:</p>
+            <div class="code-block">
+                const <span class="highlight">db</span> = window.supabase.createClient(SB_URL, supabaseKey);
+            </div>
+
+            <h2>2. Consulta de Catálogo</h2>
+            <p>Para obtener todos los libros registrados en la tabla <span style="color:var(--primary)">'libros'</span>:</p>
+            <div class="code-block">
+                const { data, error } = await <span class="highlight">db</span><br>
+                &nbsp;&nbsp;.from('libros')<br>
+                &nbsp;&nbsp;.select('*');
+            </div>
+
+            <h2>3. Lógica de Préstamos</h2>
+            <p>El sistema calcula automáticamente la fecha de entrega sumando 7 días a la fecha actual:</p>
+            <div class="code-block">
+                fechaEsperada.setDate(fechaSalida.getDate() + 7);<br>
+                <span class="highlight">db</span>.from('prestamos').insert([{...}]);
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Biblioteca ESCOM</h4>
+                <a href="vision.html">Nuestra Visión</a>
+                <a href="#">Voluntariado</a>
+                <a href="reglamento.html">Reglamento de Biblioteca</a>
+            </div>
+            <div class="footer-col">
+                <h4>Desarrollo</h4>
+                <a href="api.html" style="color: var(--primary);">Documentación de la API</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
