@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reglamento | BiblioTech</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         .reglamento-card {
@@ -20,11 +21,21 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Biblio<span>Tech</span></a></div>
+        <div class="logo">Biblio<span>Tech</span></div>
+        
+        <div class="nav-search">
+            <input type="text" id="navSearchInput" placeholder="Buscar título, autor o ISBN...">
+            <button onclick="buscarLibro()">🔍</button>
+        </div>
+
         <div class="nav-links">
-            <a href="index.html">Catálogo</a>
+            <a href="#" class="active">Catálogo</a>
             <a href="#">Préstamos</a>
             <a href="#">Comunidad</a>
+            <button class="btn-secondary" id="btnTheme" style="border: none !important; font-size: 1.2rem; padding: 5px 10px; min-width: auto;" title="Cambiar Tema">🌓</button>
+            <button class="btn-secondary" id="btnLogin" style="background:transparent; color:var(--text-main); border:1px solid var(--primary); padding:10px 20px; border-radius:10px; cursor:pointer; margin-right:10px;">Login</button>
+            <button class="btn-primary" id="btnRegistro">+ Registro</button>
+            <button class="btn-primary" id="btnLogout" style="display:none; background:var(--error); margin-left:10px;">Cerrar Sesión</button>
         </div>
     </nav>
 
