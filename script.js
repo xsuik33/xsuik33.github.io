@@ -176,21 +176,49 @@ window.mostrarPagina = function(pagina) {
         return;
     }
 
+    // ==========================================
+    // NUEVA LÓGICA DE PAGINACIÓN AVANZADA
+    // ==========================================
     let botones = `<button class="page-btn" ${pagina === 1 ? 'disabled' : ''} onclick="mostrarPagina(${pagina - 1})">← Ant</button>`;
-    let startPage = Math.max(1, pagina - 2);
-    let endPage = Math.min(totalPaginas, pagina + 2);
     
-    if (endPage - startPage < 4) {
-        if (startPage === 1) endPage = Math.min(totalPaginas, startPage + 4);
-        if (endPage === totalPaginas) startPage = Math.max(1, endPage - 4);
+    if (totalPaginas <= 5) {
+        // Si hay 5 páginas o menos, mostramos todas de corrido (1 2 3 4 5)
+        for (let i = 1; i <= totalPaginas; i++) {
+            botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
+        }
+    } else {
+        // Si estamos al principio (páginas 1, 2, 3)
+        if (pagina <= 3) {
+            for (let i = 1; i <= 4; i++) {
+                botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
+            }
+            botones += `<span style="color: var(--text-dim); padding: 0 10px; font-weight: bold;">...</span>`;
+            botones += `<button class="page-btn" onclick="mostrarPagina(${totalPaginas})">${totalPaginas}</button>`;
+        } 
+        // Si estamos al final (las últimas 3 páginas)
+        else if (pagina >= totalPaginas - 2) {
+            botones += `<button class="page-btn" onclick="mostrarPagina(1)">1</button>`;
+            botones += `<span style="color: var(--text-dim); padding: 0 10px; font-weight: bold;">...</span>`;
+            for (let i = totalPaginas - 3; i <= totalPaginas; i++) {
+                botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
+            }
+        } 
+        // Si estamos en medio (ej. página 10 de 20)
+        else {
+            botones += `<button class="page-btn" onclick="mostrarPagina(1)">1</button>`;
+            botones += `<span style="color: var(--text-dim); padding: 0 10px; font-weight: bold;">...</span>`;
+            for (let i = pagina - 1; i <= pagina + 1; i++) {
+                botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
+            }
+            botones += `<span style="color: var(--text-dim); padding: 0 10px; font-weight: bold;">...</span>`;
+            botones += `<button class="page-btn" onclick="mostrarPagina(${totalPaginas})">${totalPaginas}</button>`;
+        }
     }
 
-    for (let i = startPage; i <= endPage; i++) {
-        botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
-    }
     botones += `<button class="page-btn" ${pagina === totalPaginas ? 'disabled' : ''} onclick="mostrarPagina(${pagina + 1})">Sig →</button>`;
     paginacion.innerHTML = botones;
     
+    // Scrollear hacia arriba suavemente al cambiar de página
     if (pagina > 1) {
         const section = document.querySelector('.shelf-section');
         if(section) section.scrollIntoView({ behavior: 'smooth' });
