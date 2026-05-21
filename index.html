@@ -43,31 +43,14 @@
 
     <main class="container">
         
-        <section class="welcome-banner">
-            <div class="welcome-card">
-                <div class="welcome-icon">🖥️</div>
-                <div class="welcome-info">
-                    <h3>Descubre libros en línea</h3>
-                    <p>Millones de libros disponibles a través del catálogo digital interconectado.</p>
-                </div>
-            </div>
-            <div class="welcome-card">
-                <div class="welcome-icon">🎯</div>
-                <div class="welcome-info">
-                    <h3>Establece objetivos de lectura</h3>
-                    <p>Aprende a establecer una meta anual y haz seguimiento de tu progreso académico.</p>
-                </div>
-            </div>
-            <div class="welcome-card">
-                <div class="welcome-icon">📚</div>
-                <div class="welcome-info">
-                    <h3>Organiza tus favoritos</h3>
-                    <p>Sigue el rastro de tus ejemplares preferidos usando las listas de lectura.</p>
-                </div>
-            </div>
-        </section>
+        <div class="section-title" style="margin-bottom: 20px;">
+            <h3 style="font-size: 1.2rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px;">Disponibles en Plantel</h3>
+        </div>
+        
+        <section class="welcome-banner" id="localBooksBanner">
+            </section>
 
-        <div class="shelf-section">
+        <div class="shelf-section" style="margin-top: 40px;">
             <div class="section-title">
                 <h2 id="tituloCatalogo">Libros en tendencia (Ciencias e Ingeniería)</h2>
                 <div class="line" style="width: 50px; height: 4px; background: var(--primary); border-radius: 2px; margin-top: 10px;"></div>
@@ -108,7 +91,6 @@
                     <span style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 0.85rem; text-transform: uppercase;">Equipo de Desarrollo:</span>
                     <p>Iker Saul Gonzalez Ortiz</p>
                     <p>Juárez Bobadilla Miguel Isaí</p>
-               
                 </div>
             </div>
             
@@ -141,7 +123,7 @@
                     </div>
 
                     <p class="ol-description">
-                        Este ejemplar se despliega dinámicamente mediante el catálogo interconectado de Open Library. Puedes consultar su disponibilidad local o buscar copias y alternativas digitales de referencia en la red externa.
+                        Este ejemplar se despliega dinámicamente mediante el catálogo interconectado. Puedes consultar su disponibilidad local o buscar copias y alternativas digitales de referencia en la red externa.
                     </p>
 
                     <div class="ol-info-grid">
@@ -175,7 +157,7 @@
             <form id="regForm">
                 <input type="text" id="curp" placeholder="CURP (18 caracteres)" required maxlength="18">
                 <input type="text" id="nombre" placeholder="Nombre Completo" required>
-                <input type="text" id="user" placeholder="Nombre de Usuario (ej. saul01)" required>
+                <input type="text" id="user" placeholder="Nombre de Usuario" required>
                 <input type="password" id="pass" placeholder="Contraseña" required>
                 <label style="display:block; margin-top:10px; font-size:0.8rem; color:var(--primary)">Selecciona tu Rol:</label>
                 <select id="tipo" onchange="actualizarPlaceholder()">
