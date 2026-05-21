@@ -19,7 +19,7 @@ const db = window.supabase.createClient(SB_URL, supabaseKey);
 // VARIABLES GLOBALES (PAGINACIÓN E IDIOMAS)
 // ==========================================
 let catalogoActual = []; 
-let destacadosLocalGlobal = []; // Resguardo para abrir detalles desde el banner superior
+let destacadosLocalGlobal = []; 
 let paginaActual = 1;
 const ITEMS_POR_PAGINA = 15; 
 
@@ -29,27 +29,25 @@ const diccionarioIdiomas = {
     'chi': 'Chino', 'dut': 'Holandés', 'ara': 'Árabe', 'hin': 'Hindi'
 };
 
+// Traducciones actualizadas con el nuevo módulo de Libros Físicos
 const traducciones = {
     'es': {
-        nav_catalogo: "Catálogo", nav_prestamos: "Préstamos", nav_comunidad: "Comunidad", btn_login: "Login", btn_registro: "+ Registro",
+        nav_catalogo: "Catálogo", nav_prestamos: "Libros Físicos", nav_comunidad: "Comunidad", btn_login: "Login", btn_registro: "+ Registro",
         hero_titulo: "Tu biblioteca, reinventada.", hero_sub: "Explora millones de ejemplares en la red global o solicita préstamos físicos del acervo local.",
-        btn_buscar: "Buscar", tendencias: "Libros en tendencia (Ciencias e Ingeniería)"
+        btn_buscar: "Buscar", tendencias: "Libros en tendencia (Ciencias e Ingeniería)", acervo_local: "Acervo Físico Local (ESCOM)"
     },
     'en': {
-        nav_catalogo: "Catalog", nav_prestamos: "Loans", nav_comunidad: "Community", btn_login: "Sign In", btn_registro: "+ Sign Up",
+        nav_catalogo: "Catalog", nav_prestamos: "Physical Books", nav_comunidad: "Community", btn_login: "Sign In", btn_registro: "+ Sign Up",
         hero_titulo: "Your library, reinvented.", hero_sub: "Explore millions of copies on the global network or request physical loans from the local collection.",
-        btn_buscar: "Search", tendencias: "Trending Books (Science & Engineering)"
+        btn_buscar: "Search", tendencias: "Trending Books (Science & Engineering)", acervo_local: "Local Physical Acervus (ESCOM)"
     },
     'fr': {
-        nav_catalogo: "Catalogue", nav_prestamos: "Prêts", nav_comunidad: "Communauté", btn_login: "Connexion", btn_registro: "+ S'inscrire",
+        nav_catalogo: "Catalogue", nav_prestamos: "Livres Physiques", nav_comunidad: "Communauté", btn_login: "Connexion", btn_registro: "+ S'inscrire",
         hero_titulo: "Votre bibliothèque, réinventée.", hero_sub: "Explorez des millions d'exemplaires ou demandez des prêts physiques de la collection locale.",
-        btn_buscar: "Rechercher", tendencias: "Livres Tendances (Sciences et Ingénierie)"
+        btn_buscar: "Rechercher", tendencias: "Livres Tendances (Sciences et Ingénierie)", acervo_local: "Fonds Physique Local (ESCOM)"
     }
 };
 
-// ==========================================
-// 2. INTERNACIONALIZACIÓN (CAMBIO DE IDIOMA)
-// ==========================================
 window.cambiarIdioma = function(idioma) {
     const textos = traducciones[idioma];
     const navLinks = document.querySelectorAll('.nav-links a');
@@ -73,8 +71,12 @@ window.cambiarIdioma = function(idioma) {
     if (btnHero) btnHero.innerText = textos.btn_buscar;
     
     const tituloGrid = document.getElementById('tituloCatalogo');
-    if(tituloGrid && (tituloGrid.innerText.includes("tendencia") || tituloGrid.innerText.includes("Trending") || tituloGrid.innerText.includes("Tendances"))) {
-        tituloGrid.innerText = textos.tendencias;
+    if(tituloGrid) {
+        if (tituloGrid.innerText.includes("tendencia") || tituloGrid.innerText.includes("Trending") || tituloGrid.innerText.includes("Tendances")) {
+            tituloGrid.innerText = textos.tendencias;
+        } else if (tituloGrid.innerText.includes("Físico") || tituloGrid.innerText.includes("Physical") || tituloGrid.innerText.includes("Physique")) {
+            tituloGrid.innerText = textos.acervo_local;
+        }
     }
 
     document.querySelectorAll('.footer-col a[id^="lang-"]').forEach(el => el.classList.remove('lang-active'));
@@ -218,7 +220,7 @@ window.mostrarPagina = function(pagina) {
 };
 
 // ==========================================
-// 4. MODAL DE DETALLES Y BÚSQUEDA GLOBAL
+// 4. MODAL DE DETALLES Y FILTRADOS DE CATÁLOGO
 // ==========================================
 window.abrirDetalles = function(indice, esDelBanner = false) {
     const libro = esDelBanner ? destacadosLocalGlobal[indice] : catalogoActual[indice];
@@ -247,6 +249,48 @@ window.abrirDetalles = function(indice, esDelBanner = false) {
         };
     }
     document.getElementById("modalDetalle").style.display = "block";
+};
+
+// NUEVO: FUNCIÓN PARA MOSTRAR EXCLUSIVAMENTE LOS LIBROS DE SUPABASE EN EL GRID PRINCIPAL
+window.verLibrosLocales = async function(e) {
+    if(e) e.preventDefault();
+    
+    document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+    const linkLocales = document.getElementById('nav-prestamos');
+    if(linkLocales) linkLocales.classList.add('active');
+
+    const grid = document.getElementById('bookGrid');
+    if (!grid) {
+        // Redirección segura si se presiona desde reglamento o api
+        localStorage.setItem('cargarSoloLocales', 'true');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    grid.innerHTML = `<p style="color:var(--primary); padding: 20px; font-weight:bold; width:100%; text-align:center;">Cargando acervo físico local...</p>`;
+    const paginacion = document.getElementById('paginacion');
+    if(paginacion) paginacion.innerHTML = '';
+    
+    const tituloCatalogo = document.getElementById("tituloCatalogo");
+    if(tituloCatalogo) tituloCatalogo.innerText = "Acervo Físico Local (ESCOM)";
+
+    try {
+        const { data: librosLocal, error } = await db.from('libros').select('*');
+        if (error) throw error;
+        renderizarTarjetas(librosLocal, false);
+    } catch (err) {
+        console.error(err);
+        grid.innerHTML = `<p style="color:var(--error); width:100%; text-align:center;">Error al conectar con Supabase.</p>`;
+    }
+};
+
+window.irACatalogo = function(e) {
+    if (document.getElementById('tituloCatalogo')) {
+        if(e) e.preventDefault();
+        document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+        document.getElementById('nav-catalogo').classList.add('active');
+        cargarLibros();
+    }
 };
 
 window.buscarLibro = async function() {
@@ -316,15 +360,11 @@ window.solicitarPrestamo = async function(isbn) {
     }
 };
 
-// ==========================================
-// NUEVO: CARGAR LIBROS DESTACADOS DE SUPABASE (ARRIBA)
-// ==========================================
 async function cargarDestacadosLocal() {
     const banner = document.getElementById('localBooksBanner');
     if (!banner) return;
 
     try {
-        // Consultamos 3 libros físicos reales guardados en tu Supabase
         const { data: librosLocal, error } = await db.from('libros').select('*').limit(3);
         if (error) throw error;
 
@@ -333,24 +373,16 @@ async function cargarDestacadosLocal() {
             return;
         }
 
-        // Mapeamos los datos para guardarlos en memoria y que el modal de detalles los lea bien
         destacadosLocalGlobal = librosLocal.map(libro => {
             const isbn = libro.isbn || '';
             const portadaUrl = isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg` : 'https://via.placeholder.com/300x450/1a1e29/ffffff?text=Sin+Portada';
             return {
-                isbn,
-                titulo: libro.titulo || 'Sin Título',
-                autor: libro.autor || 'Autor Desconocido',
-                genero: libro.genero || 'Físico Local',
-                portadaUrl,
-                fecha: libro.fecha_publicacion || '--',
-                editorial: libro.editorial || '--',
-                idioma: libro.idioma || 'Español',
-                paginas: libro.paginas || '--'
+                isbn, titulo: libro.titulo || 'Sin Título', autor: libro.autor || 'Autor Desconocido',
+                genero: libro.genero || 'Físico Local', portadaUrl, fecha: libro.fecha_publicacion || '--',
+                editorial: libro.editorial || '--', idioma: libro.idioma || 'Español', paginas: libro.paginas || '--'
             };
         });
 
-        // Pintamos las 3 tarjetas horizontales superiores
         banner.innerHTML = destacadosLocalGlobal.map((libro, index) => {
             return `
             <div class="welcome-card" style="cursor:pointer; display:flex; align-items:center;" onclick="abrirDetalles(${index}, true)">
@@ -366,7 +398,7 @@ async function cargarDestacadosLocal() {
 
     } catch (err) {
         console.error("Error al cargar banner de Supabase:", err);
-        banner.style.display = 'none'; // Si hay error, se oculta limpiamente
+        banner.style.display = 'none';
     }
 }
 
@@ -487,15 +519,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(btnLogout) btnLogout.onclick = async () => { await db.auth.signOut(); alert("Sesión cerrada."); verificarSesion(); };
 
-    // CARGA INICIAL COMPUESTA
-    // Ejecuta el cargador de destacados superiores si el banner existe en la página actual
     if (document.getElementById('localBooksBanner')) {
         cargarDestacadosLocal();
     }
 
+    // GESTIÓN DE FILTRADO CRUZADO AL VOLVER DESDE OTRA PÁGINA
     if (document.getElementById('tituloCatalogo')) {
+        const soloLocales = localStorage.getItem('cargarSoloLocales');
         const busquedaPendiente = localStorage.getItem('busquedaInmediata');
-        if (busquedaPendiente) {
+        
+        if (soloLocales === 'true') {
+            localStorage.removeItem('cargarSoloLocales');
+            verLibrosLocales();
+        } else if (busquedaPendiente) {
             localStorage.removeItem('busquedaInmediata');
             if (inputNav) inputNav.value = busquedaPendiente;
             if (inputHero) inputHero.value = busquedaPendiente;
