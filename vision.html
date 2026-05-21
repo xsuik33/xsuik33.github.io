@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Visión | BiblioTech</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Biblio<span>Tech</span></a></div>
+        <div class="nav-links">
+            <a href="index.html">Catálogo</a>
+            <a href="#">Préstamos</a>
+            <a href="#">Comunidad</a>
+        </div>
+    </nav>
+
+    <main class="container" style="max-width: 800px; margin: 60px auto; min-height: 50vh;">
+        
+        <div class="section-title">
+            <h1 style="font-size: 2.5rem; color: var(--primary);">Nuestra Visión</h1>
+            <div class="line" style="width: 100px; height: 3px; background: var(--primary); margin-top: 15px; margin-bottom: 40px;"></div>
+        </div>
+
+        <div style="font-size: 1.2rem; line-height: 1.9; color: var(--text-main); text-align: justify;">
+            <p style="margin-bottom: 25px;">
+                BiblioTech surge como una iniciativa académica de vanguardia, consolidándose como el eje central de gestión documental para la comunidad del <strong>Instituto Politécnico Nacional</strong>. Nuestra visión es trascender las barreras físicas de la biblioteca tradicional, ofreciendo un ecosistema digital de alta disponibilidad.
+            </p>
+            
+            <p style="margin-bottom: 25px;">
+                Nos proyectamos como un nodo de conocimiento inclusivo, que no solo brinda soporte especializado a la comunidad politécnica en sus necesidades de ingeniería y ciencias aplicadas, sino que extiende sus servicios a usuarios externos, promoviendo la democratización del acceso a la información técnica y científica.
+            </p>
+
+            <p style="margin-bottom: 25px;">
+                A través de la integración de tecnologías emergentes, buscamos optimizar la interacción entre el acervo bibliográfico y el usuario, garantizando eficiencia, transparencia y un compromiso ineludible con la excelencia académica que caracteriza a la <strong>Escuela Superior de Cómputo</strong>.
+            </p>
+        </div>
+
+    </main>
+
+<footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Biblioteca ESCOM</h4>
+                <a href="vision.html">Nuestra Visión</a>
+                <a href="voluntariado.html">Voluntariado</a>
+                <a href="reglamento.html">Reglamento de Biblioteca</a>
+                <a href="terminos.html">Términos de servicio</a>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Descubrir</h4>
+                <a href="#">Inicio del Catálogo</a>
+                <a href="#">Autores destacados</a>
+                <a href="#">Ingeniería en Sistemas</a>
+                <a href="#">Programación C++ y Java</a>
+                <a href="#">Diseño VHDL y Hardware</a>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Desarrollo</h4>
+                <a href="#">Documentación de la API</a>
+                <a href="#">Repositorio en GitHub</a>
+                <div class="team-credits">
+                    <span style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 0.85rem; text-transform: uppercase;">Equipo de Desarrollo:</span>
+                    <p>Iker Saul Gonzalez Ortiz</p>
+                    <p>Juárez Bobadilla Miguel Isaí</p>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Cambiar idioma</h4>
+                <a href="#" onclick="cambiarIdioma('es')" id="lang-es" class="lang-active">Español (es)</a>
+                <a href="#" onclick="cambiarIdioma('en')" id="lang-en">English (en)</a>
+                <a href="#" onclick="cambiarIdioma('fr')" id="lang-fr">Français (fr)</a>
+            </div>
+        </div>
+    </footer>
+    <div id="modalLogin" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeLogin">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <p style="color: var(--text-dim); margin-bottom: 20px;">Ingresa tus credenciales de la ESCOM.</p>
+            <form id="loginForm">
+                <input type="text" id="loginUser" placeholder="Nombre de Usuario" required>
+                <input type="password" id="loginPass" placeholder="Contraseña" required>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Entrar al Sistema</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>
