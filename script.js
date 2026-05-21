@@ -550,3 +550,23 @@ const tituloOriginal = document.title;
 document.addEventListener("visibilitychange", () => {
     document.title = document.hidden ? "¡Vuelve a la mejor biblioteca! 📚" : tituloOriginal;
 });
+// ==========================================
+// 7. ATAJOS DE BÚSQUEDA DEL FOOTER
+// ==========================================
+window.busquedaRapida = function(termino, e) {
+    if (e) e.preventDefault();
+    
+    if (document.getElementById('tituloCatalogo')) {
+        // Si ya estamos en la página principal
+        const inputNav = document.getElementById('navSearchInput');
+        if (inputNav) inputNav.value = termino;
+        buscarLibro();
+        
+        // Efecto suave para subir la pantalla y que el usuario vea los resultados
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    } else {
+        // Si estamos en el reglamento, visión o API, guardamos el término y redirigimos
+        localStorage.setItem('busquedaInmediata', termino);
+        window.location.href = 'index.html';
+    }
+};
