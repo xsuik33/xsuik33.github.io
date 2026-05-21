@@ -229,6 +229,11 @@ window.abrirDetalles = function(indice) {
     document.getElementById("modalDetalle").style.display = "block";
 };
 
+// ==========================================
+// 4. MODAL DE DETALLES Y BÚSQUEDA GLOBAL
+// ==========================================
+// ... (Tu función window.abrirDetalles se queda igual arriba de esto) ...
+
 window.buscarLibro = async function() {
     const inputNav = document.getElementById('navSearchInput');
     const inputHero = document.getElementById('searchInput');
@@ -241,20 +246,30 @@ window.buscarLibro = async function() {
 
     grid.innerHTML = `<p style="color:var(--primary); padding: 20px; font-weight:bold; width:100%; text-align:center;">Buscando "${termino}" en la red global...</p>`;
     if(paginacion) paginacion.innerHTML = '';
+    
     const tituloCatalogo = document.getElementById("tituloCatalogo");
-    if(tituloCatalogo) tituloCatalogo.innerText = "Resultados de búsqueda";
+    if(tituloCatalogo) tituloCatalogo.innerText = "Buscando resultados...";
 
     try {
         const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(termino)}&limit=300`);
         const data = await response.json();
+        
         if (!data.docs || data.docs.length === 0) {
             grid.innerHTML = `<p style="color:var(--text-dim); padding: 20px; width:100%; text-align:center;">No se encontraron resultados para "${termino}".</p>`;
+            if(tituloCatalogo) tituloCatalogo.innerText = `0 resultados para "${termino}"`;
             return;
         }
+        
+        // AQUÍ ACTUALIZAMOS EL TÍTULO CON EL CONTADOR EXACTO
+        if(tituloCatalogo) {
+            tituloCatalogo.innerText = `Resultados para "${termino}": ${data.docs.length} libros encontrados`;
+        }
+        
         renderizarTarjetas(data.docs, true);
     } catch (err) {
         console.error(err);
         grid.innerHTML = `<p style="color:var(--error); padding: 20px; width:100%; text-align:center;">Error de conexión con Open Library.</p>`;
+        if(tituloCatalogo) tituloCatalogo.innerText = "Error en la búsqueda";
     }
 };
 
