@@ -309,7 +309,7 @@ window.buscarLibro = async function() {
     if(tituloCatalogo) tituloCatalogo.innerText = "Buscando resultados...";
 
     try {
-        const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(termino)}&limit=300000`);
+        const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(termino)}&limit=3000`);
         const data = await response.json();
         
         if (!data.docs || data.docs.length === 0) {
@@ -411,7 +411,7 @@ async function cargarLibros() {
     if(tituloCatalogo) tituloCatalogo.innerText = "Libros en tendencia (Ciencias e Ingeniería)";
 
     try {
-        const response = await fetch(`https://openlibrary.org/search.json?q=subject:computer_science&limit=150`);
+        const response = await fetch(`https://openlibrary.org/search.json?q=subject:computer_science&limit=3000`);
         const data = await response.json();
         renderizarTarjetas(data.docs, true);
     } catch (err) {
