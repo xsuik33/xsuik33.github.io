@@ -19,8 +19,9 @@ const db = window.supabase.createClient(SB_URL, supabaseKey);
 // VARIABLES GLOBALES (PAGINACIÓN E IDIOMAS)
 // ==========================================
 let catalogoActual = []; 
+let destacadosLocalGlobal = []; // Resguardo para abrir detalles desde el banner superior
 let paginaActual = 1;
-const ITEMS_POR_PAGINA = 15; // Ajuste forzado de 15 libros por página (3x5)
+const ITEMS_POR_PAGINA = 15; 
 
 const diccionarioIdiomas = {
     'spa': 'Español', 'eng': 'Inglés', 'fre': 'Francés', 'ger': 'Alemán',
@@ -162,7 +163,7 @@ window.mostrarPagina = function(pagina) {
                 <span title="${libro.autor.replace(/"/g, '&quot;')}"><strong>${libro.autor}</strong></span>
                 <p>${libro.genero}</p>
                 <button class="btn-secondary" style="width:100%; margin-top:15px; padding:10px; font-size:0.8rem;" 
-                        onclick="abrirDetalles(${indiceReal})">
+                        onclick="abrirDetalles(${indiceReal}, false)">
                     Ver Detalles
                 </button>
             </div>
@@ -176,40 +177,32 @@ window.mostrarPagina = function(pagina) {
         return;
     }
 
-    // ==========================================
-    // NUEVA LÓGICA DE PAGINACIÓN AVANZADA
-    // ==========================================
     let botones = `<button class="page-btn" ${pagina === 1 ? 'disabled' : ''} onclick="mostrarPagina(${pagina - 1})">← Ant</button>`;
+    let startPage = Math.max(1, pagina - 2);
+    let endPage = Math.min(totalPaginas, pagina + 2);
     
+    if (endPage - startPage < 4) {
+        if (startPage === 1) endPage = Math.min(totalPaginas, startPage + 4);
+        if (endPage === totalPaginas) startPage = Math.max(1, endPage - 4);
+    }
+
     if (totalPaginas <= 5) {
-        // Si hay 5 páginas o menos, mostramos todas de corrido (1 2 3 4 5)
         for (let i = 1; i <= totalPaginas; i++) {
             botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
         }
     } else {
-        // Si estamos al principio (páginas 1, 2, 3)
         if (pagina <= 3) {
-            for (let i = 1; i <= 4; i++) {
-                botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
-            }
+            for (let i = 1; i <= 4; i++) { botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`; }
             botones += `<span style="color: var(--text-dim); padding: 0 10px; font-weight: bold;">...</span>`;
             botones += `<button class="page-btn" onclick="mostrarPagina(${totalPaginas})">${totalPaginas}</button>`;
-        } 
-        // Si estamos al final (las últimas 3 páginas)
-        else if (pagina >= totalPaginas - 2) {
+        } else if (pagina >= totalPaginas - 2) {
             botones += `<button class="page-btn" onclick="mostrarPagina(1)">1</button>`;
             botones += `<span style="color: var(--text-dim); padding: 0 10px; font-weight: bold;">...</span>`;
-            for (let i = totalPaginas - 3; i <= totalPaginas; i++) {
-                botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
-            }
-        } 
-        // Si estamos en medio (ej. página 10 de 20)
-        else {
+            for (let i = totalPaginas - 3; i <= totalPaginas; i++) { botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`; }
+        } else {
             botones += `<button class="page-btn" onclick="mostrarPagina(1)">1</button>`;
             botones += `<span style="color: var(--text-dim); padding: 0 10px; font-weight: bold;">...</span>`;
-            for (let i = pagina - 1; i <= pagina + 1; i++) {
-                botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`;
-            }
+            for (let i = pagina - 1; i <= pagina + 1; i++) { botones += `<button class="page-btn ${i === pagina ? 'active' : ''}" onclick="mostrarPagina(${i})">${i}</button>`; }
             botones += `<span style="color: var(--text-dim); padding: 0 10px; font-weight: bold;">...</span>`;
             botones += `<button class="page-btn" onclick="mostrarPagina(${totalPaginas})">${totalPaginas}</button>`;
         }
@@ -218,7 +211,6 @@ window.mostrarPagina = function(pagina) {
     botones += `<button class="page-btn" ${pagina === totalPaginas ? 'disabled' : ''} onclick="mostrarPagina(${pagina + 1})">Sig →</button>`;
     paginacion.innerHTML = botones;
     
-    // Scrollear hacia arriba suavemente al cambiar de página
     if (pagina > 1) {
         const section = document.querySelector('.shelf-section');
         if(section) section.scrollIntoView({ behavior: 'smooth' });
@@ -228,8 +220,8 @@ window.mostrarPagina = function(pagina) {
 // ==========================================
 // 4. MODAL DE DETALLES Y BÚSQUEDA GLOBAL
 // ==========================================
-window.abrirDetalles = function(indice) {
-    const libro = catalogoActual[indice];
+window.abrirDetalles = function(indice, esDelBanner = false) {
+    const libro = esDelBanner ? destacadosLocalGlobal[indice] : catalogoActual[indice];
     
     document.getElementById("detalleTitulo").innerText = libro.titulo;
     document.getElementById("detalleAutor").innerText = libro.autor;
@@ -257,11 +249,6 @@ window.abrirDetalles = function(indice) {
     document.getElementById("modalDetalle").style.display = "block";
 };
 
-// ==========================================
-// 4. MODAL DE DETALLES Y BÚSQUEDA GLOBAL
-// ==========================================
-// ... (Tu función window.abrirDetalles se queda igual arriba de esto) ...
-
 window.buscarLibro = async function() {
     const inputNav = document.getElementById('navSearchInput');
     const inputHero = document.getElementById('searchInput');
@@ -274,7 +261,6 @@ window.buscarLibro = async function() {
 
     grid.innerHTML = `<p style="color:var(--primary); padding: 20px; font-weight:bold; width:100%; text-align:center;">Buscando "${termino}" en la red global...</p>`;
     if(paginacion) paginacion.innerHTML = '';
-    
     const tituloCatalogo = document.getElementById("tituloCatalogo");
     if(tituloCatalogo) tituloCatalogo.innerText = "Buscando resultados...";
 
@@ -288,16 +274,13 @@ window.buscarLibro = async function() {
             return;
         }
         
-        // AQUÍ ACTUALIZAMOS EL TÍTULO CON EL CONTADOR EXACTO
         if(tituloCatalogo) {
             tituloCatalogo.innerText = `Resultados para "${termino}": ${data.docs.length} libros encontrados`;
         }
-        
         renderizarTarjetas(data.docs, true);
     } catch (err) {
         console.error(err);
         grid.innerHTML = `<p style="color:var(--error); padding: 20px; width:100%; text-align:center;">Error de conexión con Open Library.</p>`;
-        if(tituloCatalogo) tituloCatalogo.innerText = "Error en la búsqueda";
     }
 };
 
@@ -332,6 +315,60 @@ window.solicitarPrestamo = async function(isbn) {
         alert("Error al procesar la solicitud: " + err.message);
     }
 };
+
+// ==========================================
+// NUEVO: CARGAR LIBROS DESTACADOS DE SUPABASE (ARRIBA)
+// ==========================================
+async function cargarDestacadosLocal() {
+    const banner = document.getElementById('localBooksBanner');
+    if (!banner) return;
+
+    try {
+        // Consultamos 3 libros físicos reales guardados en tu Supabase
+        const { data: librosLocal, error } = await db.from('libros').select('*').limit(3);
+        if (error) throw error;
+
+        if (!librosLocal || librosLocal.length === 0) {
+            banner.innerHTML = `<div class="welcome-card" style="width:100%; justify-content:center;"><p style="color:var(--text-dim); font-style:italic;">No hay libros físicos registrados en Supabase todavía.</p></div>`;
+            return;
+        }
+
+        // Mapeamos los datos para guardarlos en memoria y que el modal de detalles los lea bien
+        destacadosLocalGlobal = librosLocal.map(libro => {
+            const isbn = libro.isbn || '';
+            const portadaUrl = isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg` : 'https://via.placeholder.com/300x450/1a1e29/ffffff?text=Sin+Portada';
+            return {
+                isbn,
+                titulo: libro.titulo || 'Sin Título',
+                autor: libro.autor || 'Autor Desconocido',
+                genero: libro.genero || 'Físico Local',
+                portadaUrl,
+                fecha: libro.fecha_publicacion || '--',
+                editorial: libro.editorial || '--',
+                idioma: libro.idioma || 'Español',
+                paginas: libro.paginas || '--'
+            };
+        });
+
+        // Pintamos las 3 tarjetas horizontales superiores
+        banner.innerHTML = destacadosLocalGlobal.map((libro, index) => {
+            return `
+            <div class="welcome-card" style="cursor:pointer; display:flex; align-items:center;" onclick="abrirDetalles(${index}, true)">
+                <img src="${libro.portadaUrl}" alt="Portada" style="width:60px; height:85px; object-fit:cover; border-radius:3px; margin-right:15px; border:1px solid var(--card-border);" onerror="this.src='https://via.placeholder.com/300x450/1a1e29/ffffff?text=Sin+Portada'">
+                <div class="welcome-info">
+                    <h3 style="font-size:1.05rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">${libro.titulo}</h3>
+                    <p style="font-size:0.85rem; margin-bottom:2px;">${libro.autor}</p>
+                    <span style="color:var(--primary); font-size:0.75rem; font-weight:bold; text-transform:uppercase; font-family:'Playfair Display'; letter-spacing:0.5px;">Disponible Local 🏛️</span>
+                </div>
+            </div>
+            `;
+        }).join('');
+
+    } catch (err) {
+        console.error("Error al cargar banner de Supabase:", err);
+        banner.style.display = 'none'; // Si hay error, se oculta limpiamente
+    }
+}
 
 async function cargarLibros() {
     const grid = document.getElementById('bookGrid');
@@ -376,7 +413,6 @@ async function verificarSesion() {
 // 5. EVENTOS GLOBALES E INICIALIZACIÓN
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Control del Tema Claro / Oscuro
     const btnTheme = document.getElementById('btnTheme');
     if (localStorage.getItem('temaBiblioTech') === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
@@ -393,7 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Modales Event Listeners
     const modalRegistro = document.getElementById("modalRegistro");
     const btnRegistro = document.getElementById("btnRegistro");
     const spanRegistro = document.querySelector("#modalRegistro .close");
@@ -416,13 +451,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modalDetalle) modalDetalle.style.display = "none";
     };
 
-    // Control de Enters en Buscadores
     const inputNav = document.getElementById('navSearchInput');
     const inputHero = document.getElementById('searchInput');
     if (inputNav) inputNav.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); buscarLibro(); } });
     if (inputHero) inputHero.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); buscarLibro(); } });
 
-    // Formularios Auth
     const regForm = document.getElementById('regForm');
     if (regForm) {
         regForm.onsubmit = async (e) => {
@@ -454,10 +487,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(btnLogout) btnLogout.onclick = async () => { await db.auth.signOut(); alert("Sesión cerrada."); verificarSesion(); };
 
-    // ==========================================
-    // INICIALIZACIÓN CRUZADA (CROSS-PAGE SEARCH)
-    // ==========================================
-    // Solo ejecutamos lógica de catálogo si estamos en el index
+    // CARGA INICIAL COMPUESTA
+    // Ejecuta el cargador de destacados superiores si el banner existe en la página actual
+    if (document.getElementById('localBooksBanner')) {
+        cargarDestacadosLocal();
+    }
+
     if (document.getElementById('tituloCatalogo')) {
         const busquedaPendiente = localStorage.getItem('busquedaInmediata');
         if (busquedaPendiente) {
@@ -475,9 +510,6 @@ document.addEventListener('DOMContentLoaded', () => {
     verificarSesion();
 });
 
-// ==========================================
-// 6. VISIBILIDAD DINÁMICA DE LA PESTAÑA
-// ==========================================
 const tituloOriginal = document.title;
 document.addEventListener("visibilitychange", () => {
     document.title = document.hidden ? "¡Vuelve a la mejor biblioteca! 📚" : tituloOriginal;
