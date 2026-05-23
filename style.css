@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
 
 /* ==========================================
-   VARIABLES Y MODO OSCURO (POR DEFECTO)
+   1. VARIABLES (MODO OSCURO POR DEFECTO)
 ========================================== */
 :root {
+    /* Tus colores principales */
     --color-1: rgb(128, 0, 128); /* Púrpura */
     --color-2: rgb(128, 0, 64);  /* Magenta oscuro */
     --color-3: rgb(128, 0, 0);   /* Vino */
 
+    /* Fondos y Textos Oscuros */
     --bg-main: #0f0a0f;          
     --bg-card: #181118;          
     --bg-nav: rgba(15, 10, 15, 0.95);
@@ -19,25 +21,29 @@
 }
 
 /* ==========================================
-   MODO CLARO (Cuando activas el botón del sol)
+   2. VARIABLES (MODO CLARO)
+   Se activa cuando JS añade <body class="light-mode">
 ========================================== */
-body.light-theme, body.light-mode {
-    --bg-main: #f8f5f8;          
+body.light-mode {
+    --bg-main: #fcfcfc;          
     --bg-card: #ffffff;          
     --bg-nav: rgba(255, 255, 255, 0.95);
     
-    --accent-gold: #b8860b;      
-    --text-light: #1a0a1a;
-    --text-muted: #5a4a5a;
+    --accent-gold: #8b6508;      
+    --text-light: #1a1a1a;       
+    --text-muted: #666666;
     --border-color: rgba(128, 0, 128, 0.2); 
 }
 
+/* ==========================================
+   3. ESTILOS GLOBALES
+========================================== */
 * { 
     margin: 0; 
     padding: 0; 
     box-sizing: border-box; 
     font-family: 'Plus Jakarta Sans', sans-serif; 
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
@@ -52,7 +58,7 @@ h1, h2, h3, h4, .logo {
 }
 
 /* ==========================================
-   NAVBAR Y LOGO
+   4. NAVBAR Y LOGO
 ========================================== */
 .navbar {
     display: flex; 
@@ -86,7 +92,7 @@ h1, h2, h3, h4, .logo {
     filter: invert(70%) sepia(40%) saturate(600%) hue-rotate(350deg) brightness(95%) contrast(90%); 
 }
 
-/* BUSCADOR DEL NAV */
+/* Buscador del Nav */
 .nav-search {
     display: flex;
     flex: 1;
@@ -111,17 +117,53 @@ h1, h2, h3, h4, .logo {
 .nav-links a:hover { color: var(--accent-gold); }
 
 /* ==========================================
-   BOTONES REPARADOS (Forzando colores)
+   5. BOTONES DEL HEADER Y MODO OSCURO
 ========================================== */
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Botón Tema (Borra el fondo blanco de la imagen) */
+#themeToggle, .theme-toggle, button[onclick*="tema"] {
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#themeToggle img, .theme-toggle img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    mix-blend-mode: multiply; /* Oculta el fondo blanco */
+    border-radius: 50%;
+}
+
+/* Botones Login y Registro Unificados */
+#btnLogin, .btn-login, #btnRegistro, .btn-register, button[onclick*="registro"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px; 
+    padding: 0 24px;
+    box-sizing: border-box;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
 #btnLogin, .btn-login {
     background: transparent !important;
     color: var(--text-light) !important;
     border: 1px solid var(--text-light) !important;
-    padding: 8px 20px;
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: 600;
-    text-decoration: none;
 }
 
 #btnLogin:hover, .btn-login:hover {
@@ -133,20 +175,14 @@ h1, h2, h3, h4, .logo {
     background: var(--color-1) !important; 
     color: white !important;
     border: none !important;
-    padding: 8px 20px;
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
-    text-decoration: none;
 }
 
-#btnRegistro:hover, .btn-register:hover, button[onclick*="registro"]:hover { 
+#btnRegistro:hover, .btn-register:hover { 
     background: var(--color-2) !important; 
 } 
 
 /* ==========================================
-   HERO SECTION
+   6. HERO SECTION
 ========================================== */
 .hero { 
     padding: 100px 5% 60px; 
@@ -158,7 +194,7 @@ h1, h2, h3, h4, .logo {
 .hero p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto 40px; }
 
 /* ==========================================
-   TARJETAS Y GRID DE LIBROS
+   7. GRID DE LIBROS Y TARJETAS
 ========================================== */
 .container { padding: 50px 5%; max-width: 1400px; margin: 0 auto; }
 .section-title { margin-bottom: 30px; }
@@ -194,56 +230,59 @@ h1, h2, h3, h4, .logo {
 .book-info span { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px; }
 .book-info p { font-size: 0.8rem; color: var(--text-light); font-weight: 600; display: flex; align-items: center; gap: 5px; }
 .book-info button {
-    background: var(--color-1);
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    margin-top: 10px;
+    background: var(--color-1); color: white; border: none; padding: 8px 12px;
+    border-radius: 6px; cursor: pointer; font-size: 0.85rem; margin-top: 10px;
 }
 
 /* ==========================================
-   PAGINACIÓN REPARADA (Centrada)
+   8. PAGINACIÓN
 ========================================== */
-.pagination, #pagination {
+.pagination, #pagination, .paginacion {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
     width: 100%;
-    margin-top: 50px;
-    padding-top: 20px;
+    margin: 50px auto 20px auto; 
+    text-align: center;
 }
 
-.pagination button, .pagination span {
-    background: var(--bg-card);
-    color: var(--text-light);
-    border: 1px solid var(--border-color);
-    padding: 8px 14px;
+.pagination button, .pagination span, .pagination a, .pagination input {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 40px;
+    height: 40px;
+    background: var(--bg-main) !important; 
+    color: var(--accent-gold) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
+    transition: all 0.2s;
+    text-decoration: none;
 }
 
-.pagination button:hover {
-    background: var(--color-1);
-    color: white;
-    border-color: var(--color-1);
+.pagination button:hover, .pagination a:hover {
+    background: var(--color-1) !important;
+    color: white !important;
+    border-color: var(--color-1) !important;
+}
+
+.pagination .active, .pagination button:disabled, .pagination span {
+    background: rgba(128,128,128,0.1) !important;
+    color: var(--text-muted) !important;
+    cursor: not-allowed;
 }
 
 /* ==========================================
-   MODALES (REGISTRO, LOGIN Y LIBROS)
+   9. MODALES (REGISTRO, LOGIN Y LIBROS)
 ========================================== */
 .modal { 
     display: none; 
     position: fixed; 
     z-index: 2000; 
-    left: 0; 
-    top: 0; 
-    width: 100vw; 
-    height: 100vh; 
+    left: 0; top: 0; width: 100vw; height: 100vh; 
     background-color: rgba(15, 10, 15, 0.85); 
     backdrop-filter: blur(8px); 
     overflow: auto; 
@@ -254,8 +293,7 @@ h1, h2, h3, h4, .logo {
     padding: 45px; 
     border: 1px solid var(--border-color); 
     border-radius: 16px; 
-    width: 90%; 
-    max-width: 480px; 
+    width: 90%; max-width: 480px; 
     margin: 10vh auto; 
     position: relative; 
     box-shadow: 0 30px 60px rgba(0,0,0,0.5);
@@ -268,11 +306,12 @@ h1, h2, h3, h4, .logo {
     width: 100%; padding: 15px; margin: 10px 0; background: rgba(128, 128, 128, 0.1); 
     border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-light); font-size: 1rem; 
 }
+
 #regForm button, #loginForm button {
-    width: 100%; background: var(--color-1); color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px;
+    width: 100%; background: var(--color-1); color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; font-weight: 600;
 }
 
-/* VISTA PREVIA DE LIBROS (OPEN LIBRARY MODAL) */
+/* Vista Previa Open Library Modal */
 .modal-extralarge { max-width: 950px !important; width: 95%; padding: 45px; }
 .open-library-layout { display: flex; gap: 50px; }
 .ol-left-col { width: 280px; display: flex; flex-direction: column; gap: 20px; }
@@ -283,7 +322,7 @@ h1, h2, h3, h4, .logo {
 .ol-author { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 20px; }
 
 /* ==========================================
-   PIE DE PÁGINA REPARADO (Formato Columnas)
+   10. PIE DE PÁGINA (COLUMNAS)
 ========================================== */
 .site-footer { 
     background-color: var(--bg-card); 
@@ -300,7 +339,7 @@ h1, h2, h3, h4, .logo {
     gap: 40px; 
     max-width: 1200px;
     margin: 0 auto;
-    text-align: left; /* Quitamos el centrado forzado */
+    text-align: left; 
 }
 
 .footer-col {
@@ -312,35 +351,24 @@ h1, h2, h3, h4, .logo {
 }
 
 .footer-col h4 {
-    color: var(--accent-gold);
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;
 }
 
 .footer-col a, .footer-col p { 
-    color: var(--text-muted); 
-    text-decoration: none; 
-    font-size: 0.95rem; 
-    transition: color 0.2s;
+    color: var(--text-muted); text-decoration: none; font-size: 0.95rem; transition: color 0.2s;
 }
 
-.footer-col a:hover { 
-    color: var(--accent-gold); 
-}
+.footer-col a:hover { color: var(--accent-gold); }
 
 .team-credits {
-    width: 100%;
-    text-align: center;
-    border-top: 1px solid var(--border-color);
-    margin-top: 40px;
-    padding-top: 20px;
+    width: 100%; text-align: center; border-top: 1px solid var(--border-color); margin-top: 40px; padding-top: 20px;
 }
 
 .team-credits p { color: var(--text-muted); font-size: 0.85rem; }
 
-/* RESPONSIVIDAD */
+/* ==========================================
+   11. RESPONSIVIDAD (MÓVILES)
+========================================== */
 @media (max-width: 768px) {
     .navbar { flex-direction: column; gap: 15px; padding: 20px; }
     .nav-search { max-width: 100%; margin: 0; }
@@ -349,4 +377,5 @@ h1, h2, h3, h4, .logo {
     .open-library-layout { flex-direction: column; align-items: center; }
     .ol-left-col { width: 100%; max-width: 300px; }
     .ol-right-col h2 { text-align: center; font-size: 2rem; }
+    .header-buttons { flex-wrap: wrap; justify-content: center; }
 }
