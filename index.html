@@ -22,7 +22,13 @@
             <button onclick="buscarLibro()">🔍</button>
         </div>
 
-        <div class="nav-links">
+        <button class="hamburger" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-links" id="navLinks">
             <a href="index.html" class="active" id="nav-catalogo" onclick="irACatalogo(event)">Catálogo</a>
             <a href="#" id="nav-prestamos" onclick="verLibrosLocales(event)">Libros Físicos</a>
             <a href="#" id="nav-comunidad">Comunidad</a>
