@@ -13,9 +13,9 @@
 
     <nav class="navbar">
         <div class="logo"><a href="index.html" class="logo">
-    <img src="burrito.png" alt="Logo Burro" class="logo-icon">
-    Biblio<span>Tech</span>
-</a></div>
+            <img src="burrito.png" alt="Logo Burro" class="logo-icon">
+            Biblio<span>Tech</span>
+        </a></div>
         
         <div class="nav-search">
             <input type="text" id="navSearchInput" placeholder="Buscar título, autor o ISBN...">
@@ -26,9 +26,9 @@
             <a href="index.html" class="active" id="nav-catalogo" onclick="irACatalogo(event)">Catálogo</a>
             <a href="#" id="nav-prestamos" onclick="verLibrosLocales(event)">Libros Físicos</a>
             <a href="#" id="nav-comunidad">Comunidad</a>
-            <button class="btn-secondary" id="btnTheme" style="border: none !important; font-size: 1.2rem; padding: 5px 10px; min-width: auto;" title="Cambiar Tema">🌓</button>
-            <button class="btn-secondary" id="btnLogin" style="background:transparent; color:var(--text-main); border:1px solid var(--primary); padding:10px 20px; border-radius:10px; cursor:pointer; margin-right:10px;">Login</button>
-            <button class="btn-primary" id="btnRegistro">+ Registro</button>
+            <button id="btnTheme" title="Cambiar Tema">🌓</button>
+            <button class="btn-login" id="btnLogin">Login</button>
+            <button class="btn-register" id="btnRegistro">+ Registro</button>
             <button class="btn-primary" id="btnLogout" style="display:none; background:var(--error); margin-left:10px;">Cerrar Sesión</button>
         </div>
     </nav>
@@ -50,8 +50,7 @@
             <h3 style="font-size: 1.2rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px;">Disponibles en Plantel</h3>
         </div>
         
-        <section class="welcome-banner" id="localBooksBanner">
-            </section>
+        <section class="welcome-banner" id="localBooksBanner"></section>
 
         <div class="shelf-section" style="margin-top: 40px;">
             <div class="section-title">
