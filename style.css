@@ -36,7 +36,7 @@ body.light-mode {
     --border-color: rgba(128, 0, 128, 0.2); 
 
     /* VARIABLES DINÁMICAS PARA EL FONDO DEL HERO EN MODO CLARO */
-    --hero-bg-full: url('burrito_light.png'); 
+    --hero-bg-full: url('burrito_light.jpg'); 
     --hero-overlay: rgba(255,255,255,0.7); 
 }
 
