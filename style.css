@@ -17,9 +17,9 @@
     --text-muted: #a6949a;
     --border-color: rgba(212, 175, 55, 0.3); 
 
-    /* VARIABLES PARA EL FONDO DEL HERO EN MODO OSCURO */
-    --hero-bg-full: url('burrito_dark.jpg'); /* La imagen que subiste */
-    --hero-overlay: rgba(0,0,0,0.6); /* Capa oscura */
+    /* VARIABLES DINÁMICAS PARA EL FONDO DEL HERO EN MODO OSCURO */
+    --hero-bg-full: url('burrito_dark.jpg'); 
+    --hero-overlay: rgba(0,0,0,0.6); 
 }
 
 /* ==========================================
@@ -35,9 +35,9 @@ body.light-mode {
     --text-muted: #666666;
     --border-color: rgba(128, 0, 128, 0.2); 
 
-    /* VARIABLES PARA EL FONDO DEL HERO EN MODO CLARO */
-    --hero-bg-full: url('burrito_light.jpg'); /* AQUÍ DEBES PONER TU IMAGEN CLARA */
-    --hero-overlay: rgba(255,255,255,0.7); /* Capa blanca transparente */
+    /* VARIABLES DINÁMICAS PARA EL FONDO DEL HERO EN MODO CLARO */
+    --hero-bg-full: url('burrito_light.png'); 
+    --hero-overlay: rgba(255,255,255,0.7); 
 }
 
 /* ==========================================
@@ -55,11 +55,11 @@ body {
     background-color: var(--bg-main); 
     color: var(--text-light);
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow-x: hidden; 
 }
 
 h1, h2, h3, h4, .logo {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Playfair Display', serif; 
 }
 
 /* ==========================================
@@ -97,7 +97,9 @@ h1, h2, h3, h4, .logo {
     filter: invert(70%) sepia(40%) saturate(600%) hue-rotate(350deg) brightness(95%) contrast(90%); 
 }
 
-/* Buscador del Nav */
+/* ==========================================
+   5. BOTONES Y BUSCADOR DEL NAV
+========================================== */
 .nav-search {
     display: flex;
     flex: 1;
@@ -120,15 +122,6 @@ h1, h2, h3, h4, .logo {
 .nav-links { display: flex; align-items: center; gap: 20px; }
 .nav-links a { color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; }
 .nav-links a:hover { color: var(--accent-gold); }
-
-/* ==========================================
-   5. BOTONES DEL HEADER Y MODO OSCURO
-========================================== */
-.header-buttons {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
 
 #btnTheme {
     background: transparent !important;
@@ -178,14 +171,13 @@ h1, h2, h3, h4, .logo {
 } 
 
 /* ==========================================
-   6. HERO SECTION Y BÚSQUEDA (IMAGEN DE FONDO COMPLETA)
+   6. HERO SECTION (IMAGEN DE FONDO COMPLETA Y LINTERNA)
 ========================================== */
 .hero { 
     padding: 150px 5% 100px; 
     position: relative;
     overflow: hidden;
     
-    /* Configuración de la imagen de fondo completa USANDO VARIABLES */
     background-image: 
         radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(212, 175, 55, 0.15) 0%, transparent 60%),
         linear-gradient(var(--hero-overlay), var(--hero-overlay)),
@@ -194,14 +186,13 @@ h1, h2, h3, h4, .logo {
     background-size: auto, cover, cover;
     background-position: center, center, center;
     background-repeat: no-repeat;
-    
     text-align: center;
 }
 
 .hero-content {
     max-width: 800px; 
     margin: 0 auto;
-    position: relative; /* Asegura que esté sobre los degradados */
+    position: relative; 
 }
 
 .hero h1 { 
@@ -213,13 +204,12 @@ h1, h2, h3, h4, .logo {
 }
 
 .hero p { 
-    color: var(--text-light); /* Siempre claro sobre la superposición */
+    color: var(--text-light); 
     font-size: 1.2rem; 
     max-width: 600px;
     margin: 0 auto 40px;
 }
 
-/* Barra de Búsqueda Centrada */
 .search-bar {
     display: flex;
     max-width: 600px;
@@ -232,24 +222,11 @@ h1, h2, h3, h4, .logo {
 }
 
 .search-bar input {
-    flex: 1;
-    padding: 15px 25px;
-    border: none;
-    background: transparent;
-    color: var(--text-light);
-    font-size: 1rem;
-    outline: none;
+    flex: 1; padding: 15px 25px; border: none; background: transparent; color: var(--text-light); font-size: 1rem; outline: none;
 }
 
 .search-bar button {
-    padding: 0 30px;
-    background: var(--color-1);
-    color: white;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s;
+    padding: 0 30px; background: var(--color-1); color: white; border: none; font-weight: 600; cursor: pointer; font-size: 1rem; transition: background 0.3s;
 }
 
 .search-bar button:hover {
@@ -311,31 +288,18 @@ h1, h2, h3, h4, .logo {
 }
 
 #paginacion button, #paginacion span {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 40px;
-    height: 40px;
-    background: var(--bg-main) !important; 
-    color: var(--accent-gold) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-    text-decoration: none;
+    display: inline-flex; justify-content: center; align-items: center; min-width: 40px; height: 40px;
+    background: var(--bg-main) !important; color: var(--accent-gold) !important;
+    border: 1px solid var(--border-color) !important; border-radius: 8px;
+    cursor: pointer; font-weight: 600; transition: all 0.2s; text-decoration: none;
 }
 
 #paginacion button:hover {
-    background: var(--color-1) !important;
-    color: white !important;
-    border-color: var(--color-1) !important;
+    background: var(--color-1) !important; color: white !important; border-color: var(--color-1) !important;
 }
 
 #paginacion .active, #paginacion button:disabled, #paginacion span {
-    background: rgba(128,128,128,0.1) !important;
-    color: var(--text-muted) !important;
-    cursor: not-allowed;
+    background: rgba(128,128,128,0.1) !important; color: var(--text-muted) !important; cursor: not-allowed;
 }
 
 /* ==========================================
@@ -404,46 +368,81 @@ h1, h2, h3, h4, .logo {
     text-align: left; 
 }
 
-.footer-col {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 200px;
-    flex: 1;
-}
-
-.footer-col h4 {
-    color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;
-}
-
-.footer-col a, .footer-col p { 
-    color: var(--text-muted); text-decoration: none; font-size: 0.95rem; transition: color 0.2s;
-}
-
+.footer-col { display: flex; flex-direction: column; gap: 12px; min-width: 200px; flex: 1; }
+.footer-col h4 { color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.footer-col a, .footer-col p { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
 .footer-col a:hover { color: var(--accent-gold); }
 
-.team-credits {
-    width: 100%; text-align: center; border-top: 1px solid var(--border-color); margin-top: 40px; padding-top: 20px;
-}
-
+.team-credits { width: 100%; text-align: center; border-top: 1px solid var(--border-color); margin-top: 40px; padding-top: 20px; }
 .team-credits p { color: var(--text-muted); font-size: 0.85rem; }
 
 /* ==========================================
-   11. RESPONSIVIDAD (MÓVILES)
+   11. RESPONSIVIDAD Y MENÚ HAMBURGUESA (MÓVILES)
 ========================================== */
-@media (max-width: 768px) {
-    .navbar { flex-direction: column; gap: 15px; padding: 20px; }
-    .nav-search { max-width: 100%; margin: 0; }
-    
-    .hero {
-        padding: 100px 5% 60px; 
+/* Ocultamos la hamburguesa en PC */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.hamburger span {
+    width: 100%;
+    height: 3px;
+    background-color: var(--accent-gold);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 900px) {
+    /* Mostramos la hamburguesa */
+    .hamburger { display: flex; }
+
+    /* Ajustamos el buscador para que quepa junto a la hamburguesa */
+    .nav-search { max-width: 200px; margin: 0 10px; }
+
+    /* Ocultamos el menú a la derecha de la pantalla y preparamos el efecto cortina */
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Menú escondido fuera de la pantalla */
+        width: 280px;
+        height: 100vh;
+        background: var(--bg-nav);
+        backdrop-filter: blur(15px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: right 0.4s ease;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+        z-index: 999;
     }
+
+    /* Clase que Javascript agregará para mostrar el menú arrastrándolo a la vista */
+    .nav-links.active {
+        right: 0;
+    }
+
+    .nav-links a { font-size: 1.2rem; margin: 10px 0; }
+    .header-buttons { flex-direction: column; gap: 15px; margin-top: 20px;}
+
+    /* Animación de la Hamburguesa transformándose en "X" al abrir el menú */
+    .hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+    /* Ajustes generales de la página para celulares */
+    .hero { padding: 120px 5% 60px; }
     .hero h1 { font-size: 2.2rem; }
     .hero p { font-size: 1rem; }
-
     .footer-container { flex-direction: column; gap: 30px; text-align: center; }
     .open-library-layout { flex-direction: column; align-items: center; }
     .ol-left-col { width: 100%; max-width: 300px; }
     .ol-right-col h2 { text-align: center; font-size: 2rem; }
-    .header-buttons { flex-wrap: wrap; justify-content: center; }
 }
