@@ -29,7 +29,6 @@ const diccionarioIdiomas = {
     'chi': 'Chino', 'dut': 'Holandés', 'ara': 'Árabe', 'hin': 'Hindi'
 };
 
-// Traducciones actualizadas con el nuevo módulo de Libros Físicos
 const traducciones = {
     'es': {
         nav_catalogo: "Catálogo", nav_prestamos: "Libros Físicos", nav_comunidad: "Comunidad", btn_login: "Login", btn_registro: "+ Registro",
@@ -62,8 +61,9 @@ window.cambiarIdioma = function(idioma) {
     if (loginBtn) loginBtn.innerText = textos.btn_login;
     if (regBtn) regBtn.innerText = textos.btn_registro;
     
-    const h1Hero = document.querySelector('.hero h1');
-    const pHero = document.querySelector('.hero p');
+    // Selectores actualizados para el nuevo Hero
+    const h1Hero = document.querySelector('.hero-content h1');
+    const pHero = document.querySelector('.hero-content p');
     const btnHero = document.querySelector('.search-bar button');
     
     if (h1Hero) h1Hero.innerText = textos.hero_titulo;
@@ -251,7 +251,6 @@ window.abrirDetalles = function(indice, esDelBanner = false) {
     document.getElementById("modalDetalle").style.display = "block";
 };
 
-// NUEVO: FUNCIÓN PARA MOSTRAR EXCLUSIVAMENTE LOS LIBROS DE SUPABASE EN EL GRID PRINCIPAL
 window.verLibrosLocales = async function(e) {
     if(e) e.preventDefault();
     
@@ -261,7 +260,6 @@ window.verLibrosLocales = async function(e) {
 
     const grid = document.getElementById('bookGrid');
     if (!grid) {
-        // Redirección segura si se presiona desde reglamento o api
         localStorage.setItem('cargarSoloLocales', 'true');
         window.location.href = 'index.html';
         return;
@@ -445,18 +443,32 @@ async function verificarSesion() {
 // 5. EVENTOS GLOBALES E INICIALIZACIÓN
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    const btnTheme = document.getElementById('btnTheme');
-    if (localStorage.getItem('temaBiblioTech') === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
+    
+    // --- EFECTO LINTERNA EN EL HERO ---
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) {
+        heroSection.addEventListener('mousemove', (e) => {
+            const rect = heroSection.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            heroSection.style.setProperty('--x', `${x}px`);
+            heroSection.style.setProperty('--y', `${y}px`);
+        });
     }
+
+    const btnTheme = document.getElementById('btnTheme');
+    
+    if (localStorage.getItem('temaBiblioTech') === 'light') {
+        document.body.classList.add('light-mode');
+    }
+
     if (btnTheme) {
         btnTheme.onclick = () => {
-            if (document.documentElement.getAttribute('data-theme') === 'light') {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('temaBiblioTech', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
                 localStorage.setItem('temaBiblioTech', 'light');
+            } else {
+                localStorage.setItem('temaBiblioTech', 'dark');
             }
         };
     }
@@ -523,7 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
         cargarDestacadosLocal();
     }
 
-    // GESTIÓN DE FILTRADO CRUZADO AL VOLVER DESDE OTRA PÁGINA
     if (document.getElementById('tituloCatalogo')) {
         const soloLocales = localStorage.getItem('cargarSoloLocales');
         const busquedaPendiente = localStorage.getItem('busquedaInmediata');
@@ -550,6 +561,7 @@ const tituloOriginal = document.title;
 document.addEventListener("visibilitychange", () => {
     document.title = document.hidden ? "¡Vuelve a la mejor biblioteca! 📚" : tituloOriginal;
 });
+
 // ==========================================
 // 7. ATAJOS DE BÚSQUEDA DEL FOOTER
 // ==========================================
@@ -557,15 +569,11 @@ window.busquedaRapida = function(termino, e) {
     if (e) e.preventDefault();
     
     if (document.getElementById('tituloCatalogo')) {
-        // Si ya estamos en la página principal
         const inputNav = document.getElementById('navSearchInput');
         if (inputNav) inputNav.value = termino;
         buscarLibro();
-        
-        // Efecto suave para subir la pantalla y que el usuario vea los resultados
         window.scrollTo({ top: 0, behavior: 'smooth' }); 
     } else {
-        // Si estamos en el reglamento, visión o API, guardamos el término y redirigimos
         localStorage.setItem('busquedaInmediata', termino);
         window.location.href = 'index.html';
     }
