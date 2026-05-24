@@ -61,7 +61,6 @@ window.cambiarIdioma = function(idioma) {
     if (loginBtn) loginBtn.innerText = textos.btn_login;
     if (regBtn) regBtn.innerText = textos.btn_registro;
     
-    // Selectores actualizados para el nuevo Hero
     const h1Hero = document.querySelector('.hero-content h1');
     const pHero = document.querySelector('.hero-content p');
     const btnHero = document.querySelector('.search-bar button');
@@ -444,6 +443,25 @@ async function verificarSesion() {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     
+    // --- LÓGICA DEL MENÚ HAMBURGUESA ---
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navLinksMenu = document.getElementById('navLinks');
+
+    if (hamburgerBtn && navLinksMenu) {
+        hamburgerBtn.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('active');
+            navLinksMenu.classList.toggle('active');
+        });
+
+        // Cierra el menú al hacer clic en un enlace (útil en móviles)
+        document.querySelectorAll('.nav-links a, .nav-links button').forEach(item => {
+            item.addEventListener('click', () => {
+                hamburgerBtn.classList.remove('active');
+                navLinksMenu.classList.remove('active');
+            });
+        });
+    }
+
     // --- EFECTO LINTERNA EN EL HERO ---
     const heroSection = document.querySelector('.hero');
     if (heroSection) {
@@ -456,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- MODO CLARO / OSCURO ---
     const btnTheme = document.getElementById('btnTheme');
     
     if (localStorage.getItem('temaBiblioTech') === 'light') {
@@ -473,6 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // --- MANEJO DE VENTANAS MODALES ---
     const modalRegistro = document.getElementById("modalRegistro");
     const btnRegistro = document.getElementById("btnRegistro");
     const spanRegistro = document.querySelector("#modalRegistro .close");
@@ -500,6 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inputNav) inputNav.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); buscarLibro(); } });
     if (inputHero) inputHero.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); buscarLibro(); } });
 
+    // --- FORMULARIOS DE SUPABASE ---
     const regForm = document.getElementById('regForm');
     if (regForm) {
         regForm.onsubmit = async (e) => {
@@ -531,6 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(btnLogout) btnLogout.onclick = async () => { await db.auth.signOut(); alert("Sesión cerrada."); verificarSesion(); };
 
+    // --- CARGA INICIAL DE DATOS ---
     if (document.getElementById('localBooksBanner')) {
         cargarDestacadosLocal();
     }
