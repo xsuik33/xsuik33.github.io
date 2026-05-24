@@ -4,12 +4,10 @@
    1. VARIABLES (MODO OSCURO POR DEFECTO)
 ========================================== */
 :root {
-    /* Tus colores principales */
     --color-1: rgb(128, 0, 128); /* Púrpura */
     --color-2: rgb(128, 0, 64);  /* Magenta oscuro */
     --color-3: rgb(128, 0, 0);   /* Vino */
 
-    /* Fondos y Textos Oscuros */
     --bg-main: #0f0a0f;          
     --bg-card: #181118;          
     --bg-nav: rgba(15, 10, 15, 0.95);
@@ -18,11 +16,14 @@
     --text-light: #fdfafb;
     --text-muted: #a6949a;
     --border-color: rgba(212, 175, 55, 0.3); 
+
+    /* VARIABLES PARA EL FONDO DEL HERO EN MODO OSCURO */
+    --hero-bg-full: url('burrito_dark.jpg'); /* La imagen que subiste */
+    --hero-overlay: rgba(0,0,0,0.6); /* Capa oscura */
 }
 
 /* ==========================================
    2. VARIABLES (MODO CLARO)
-   Se activa cuando JS añade <body class="light-mode">
 ========================================== */
 body.light-mode {
     --bg-main: #fcfcfc;          
@@ -33,6 +34,10 @@ body.light-mode {
     --text-light: #1a1a1a;       
     --text-muted: #666666;
     --border-color: rgba(128, 0, 128, 0.2); 
+
+    /* VARIABLES PARA EL FONDO DEL HERO EN MODO CLARO */
+    --hero-bg-full: url('burrito_light.jpg'); /* AQUÍ DEBES PONER TU IMAGEN CLARA */
+    --hero-overlay: rgba(255,255,255,0.7); /* Capa blanca transparente */
 }
 
 /* ==========================================
@@ -47,7 +52,7 @@ body.light-mode {
 }
 
 body {
-    background-color: var(--bg-main);
+    background-color: var(--bg-main); 
     color: var(--text-light);
     line-height: 1.6;
     overflow-x: hidden;
@@ -125,8 +130,7 @@ h1, h2, h3, h4, .logo {
     gap: 15px;
 }
 
-/* Botón Tema (Borra el fondo blanco de la imagen) */
-#themeToggle, .theme-toggle, button[onclick*="tema"] {
+#btnTheme {
     background: transparent !important;
     border: none !important;
     cursor: pointer;
@@ -134,18 +138,10 @@ h1, h2, h3, h4, .logo {
     align-items: center;
     justify-content: center;
     padding: 0;
+    font-size: 1.2rem;
 }
 
-#themeToggle img, .theme-toggle img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    mix-blend-mode: multiply; /* Oculta el fondo blanco */
-    border-radius: 50%;
-}
-
-/* Botones Login y Registro Unificados */
-#btnLogin, .btn-login, #btnRegistro, .btn-register, button[onclick*="registro"] {
+#btnLogin, .btn-login, #btnRegistro, .btn-register {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -171,7 +167,7 @@ h1, h2, h3, h4, .logo {
     color: var(--accent-gold) !important;
 }
 
-#btnRegistro, .btn-register, button[onclick*="registro"] {
+#btnRegistro, .btn-register {
     background: var(--color-1) !important; 
     color: white !important;
     border: none !important;
@@ -182,16 +178,83 @@ h1, h2, h3, h4, .logo {
 } 
 
 /* ==========================================
-   6. HERO SECTION
+   6. HERO SECTION Y BÚSQUEDA (IMAGEN DE FONDO COMPLETA)
 ========================================== */
 .hero { 
-    padding: 100px 5% 60px; 
-    text-align: center; 
-    background: radial-gradient(circle at 50% -20%, var(--color-2), var(--bg-main) 60%);
+    padding: 150px 5% 100px; 
+    position: relative;
+    overflow: hidden;
+    
+    /* Configuración de la imagen de fondo completa USANDO VARIABLES */
+    background-image: 
+        radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(212, 175, 55, 0.15) 0%, transparent 60%),
+        linear-gradient(var(--hero-overlay), var(--hero-overlay)),
+        var(--hero-bg-full);
+        
+    background-size: auto, cover, cover;
+    background-position: center, center, center;
+    background-repeat: no-repeat;
+    
+    text-align: center;
 }
 
-.hero h1 { font-size: 3.5rem; margin-bottom: 15px; color: var(--accent-gold); font-weight: 700; }
-.hero p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto 40px; }
+.hero-content {
+    max-width: 800px; 
+    margin: 0 auto;
+    position: relative; /* Asegura que esté sobre los degradados */
+}
+
+.hero h1 { 
+    font-size: 3.5rem; 
+    margin-bottom: 20px; 
+    color: var(--accent-gold); 
+    font-weight: 700; 
+    line-height: 1.1;
+}
+
+.hero p { 
+    color: var(--text-light); /* Siempre claro sobre la superposición */
+    font-size: 1.2rem; 
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+/* Barra de Búsqueda Centrada */
+.search-bar {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.1); 
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 15px 25px;
+    border: none;
+    background: transparent;
+    color: var(--text-light);
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-bar button {
+    padding: 0 30px;
+    background: var(--color-1);
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+}
+
+.search-bar button:hover {
+    background: var(--color-2);
+}
 
 /* ==========================================
    7. GRID DE LIBROS Y TARJETAS
@@ -237,7 +300,7 @@ h1, h2, h3, h4, .logo {
 /* ==========================================
    8. PAGINACIÓN
 ========================================== */
-.pagination, #pagination, .paginacion {
+#paginacion {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -247,7 +310,7 @@ h1, h2, h3, h4, .logo {
     text-align: center;
 }
 
-.pagination button, .pagination span, .pagination a, .pagination input {
+#paginacion button, #paginacion span {
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -263,13 +326,13 @@ h1, h2, h3, h4, .logo {
     text-decoration: none;
 }
 
-.pagination button:hover, .pagination a:hover {
+#paginacion button:hover {
     background: var(--color-1) !important;
     color: white !important;
     border-color: var(--color-1) !important;
 }
 
-.pagination .active, .pagination button:disabled, .pagination span {
+#paginacion .active, #paginacion button:disabled, #paginacion span {
     background: rgba(128,128,128,0.1) !important;
     color: var(--text-muted) !important;
     cursor: not-allowed;
@@ -311,7 +374,6 @@ h1, h2, h3, h4, .logo {
     width: 100%; background: var(--color-1); color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; font-weight: 600;
 }
 
-/* Vista Previa Open Library Modal */
 .modal-extralarge { max-width: 950px !important; width: 95%; padding: 45px; }
 .open-library-layout { display: flex; gap: 50px; }
 .ol-left-col { width: 280px; display: flex; flex-direction: column; gap: 20px; }
@@ -372,7 +434,13 @@ h1, h2, h3, h4, .logo {
 @media (max-width: 768px) {
     .navbar { flex-direction: column; gap: 15px; padding: 20px; }
     .nav-search { max-width: 100%; margin: 0; }
+    
+    .hero {
+        padding: 100px 5% 60px; 
+    }
     .hero h1 { font-size: 2.2rem; }
+    .hero p { font-size: 1rem; }
+
     .footer-container { flex-direction: column; gap: 30px; text-align: center; }
     .open-library-layout { flex-direction: column; align-items: center; }
     .ol-left-col { width: 100%; max-width: 300px; }
