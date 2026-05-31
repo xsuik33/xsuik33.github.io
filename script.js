@@ -309,8 +309,8 @@ window.verLibrosLocales = async function(e) {
 };
 
 //*
-*Retorna a la vista principal cargando el catálogo global.
-*/    
+/**Retorna a la vista principal cargando el catálogo global.
+*/
 window.irACatalogo = function(e) {
     if (document.getElementById('tituloCatalogo')) {
         if(e) e.preventDefault();
