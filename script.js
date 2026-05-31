@@ -1,10 +1,15 @@
 // ==========================================
 // 1. CONFIGURACIÓN SUPABASE (Ofuscación BigInt)
 // ==========================================
+//URL Base del proyecto en Supabase
 const SB_URL = 'https://fetqdwxjgwqveqpxlkdo.supabase.co'; 
-
+/**
+*LLave de API ofuscada mediante un número BigInt gigante.
+*Se utiliza para poder evitar que la clave en texto plano sea rastreada fácilmente por bots estáticos,
+*Convirtiéndola de hexadecimal a caracteres ASCII en el tiempo de ejecución.
+*/
 const giantKey = 325107289943835301567169038289173430989254416265133392209669403326094547422214826592573882541857042746475474739664941699678552908563995303252367141130785312117166904182578356924241785328077950361964713989504540355576217469036450604467145256017935657916405186645142292670773303220091267794886182181714065369188973928640335019287986385114043370384847675443579163196568799372128368184223093341427532127181163034075360487414185405085577211299591629441881207934823756263490690882223954435371781977843198793n;
-
+//Proceso de desofucación BigInt --> Hexadecimal --> ASCII
 let hexString = giantKey.toString(16);
 if (hexString.length % 2 !== 0) { hexString = '0' + hexString; }
 
@@ -12,7 +17,7 @@ let supabaseKey = '';
 for (let i = 0; i < hexString.length; i += 2) {
     supabaseKey += String.fromCharCode(parseInt(hexString.substr(i, 2), 16));
 }
-
+//Comienza la inicialización del cliente de Supabase
 const db = window.supabase.createClient(SB_URL, supabaseKey);
 
 // ==========================================
@@ -22,13 +27,13 @@ let catalogoActual = [];
 let destacadosLocalGlobal = []; 
 let paginaActual = 1;
 const ITEMS_POR_PAGINA = 15; 
-
+//Diccionario para normalizar los códigos de idioma devueltos por las APIs.
 const diccionarioIdiomas = {
     'spa': 'Español', 'eng': 'Inglés', 'fre': 'Francés', 'ger': 'Alemán',
     'ita': 'Italiano', 'por': 'Portugués', 'rus': 'Ruso', 'jpn': 'Japonés',
     'chi': 'Chino', 'dut': 'Holandés', 'ara': 'Árabe', 'hin': 'Hindi'
 };
-
+//Objeto con los strings de la interfaz para soportar internacionalización (i18n)
 const traducciones = {
     'es': {
         nav_catalogo: "Catálogo", nav_prestamos: "Libros Físicos", nav_comunidad: "Comunidad", btn_login: "Login", btn_registro: "+ Registro",
@@ -46,6 +51,7 @@ const traducciones = {
         btn_buscar: "Rechercher", tendencias: "Livres Tendances (Sciences et Ingénierie)", acervo_local: "Fonds Physique Local (ESCOM)"
     }
 };
+//Cambia el idioma de la interfaz actualizando los nodos del DOM.
 
 window.cambiarIdioma = function(idioma) {
     const textos = traducciones[idioma];
@@ -77,7 +83,7 @@ window.cambiarIdioma = function(idioma) {
             tituloGrid.innerText = textos.acervo_local;
         }
     }
-
+    //Actualiza la clase activa en los selectores de idioma del footer
     document.querySelectorAll('.footer-col a[id^="lang-"]').forEach(el => el.classList.remove('lang-active'));
     const activeLangBtn = document.getElementById(`lang-${idioma}`);
     if (activeLangBtn) activeLangBtn.classList.add('lang-active');
@@ -93,7 +99,11 @@ function actualizarPlaceholder() {
         inputId.placeholder = tipo.value === 'alumno' ? "Número de Boleta" : "Número de Empleado";
     }
 }
-
+/**
+*Normaliza los datos provenientes de la base de datos o de OpenLibrary y prepara la paginación.
+*@param {Array} Libros - Arreglo de objetos con la información de los libros.
+*@para, {boolean} esGlobal - Indica si los datos provienen de OpenLibrary (true) o de la BD local (false).
+*/
 function renderizarTarjetas(libros, esGlobal = false) {
     const grid = document.getElementById('bookGrid');
     const paginacion = document.getElementById('paginacion');
@@ -104,7 +114,7 @@ function renderizarTarjetas(libros, esGlobal = false) {
         if(paginacion) paginacion.innerHTML = '';
         return;
     }
-
+//Normalización del mapeo de los datos para unificarlos en la estructura 'catalogoActual'
     catalogoActual = libros.map(libro => {
         let portadaUrl = 'https://via.placeholder.com/300x450/1a1e29/ffffff?text=Sin+Portada';
         let isbn = libro.isbn || '';
@@ -143,12 +153,17 @@ function renderizarTarjetas(libros, esGlobal = false) {
     mostrarPagina(1);
 }
 
+/**
+*Pinta el DOM de la página específica del catálogo y genera los botones de Paginación.
+*@param {number} pagina - Número de página a renderizar.
+*/
 window.mostrarPagina = function(pagina) {
     paginaActual = pagina;
     const grid = document.getElementById('bookGrid');
     const paginacion = document.getElementById('paginacion');
     if(!grid) return;
-    
+
+    //Cálculo de índices para segmentar el arreglo 'catalogoActual'
     const inicio = (pagina - 1) * ITEMS_POR_PAGINA;
     const fin = inicio + ITEMS_POR_PAGINA;
     const librosPagina = catalogoActual.slice(inicio, fin);
@@ -172,6 +187,7 @@ window.mostrarPagina = function(pagina) {
         `;
     }).join('');
 
+    //Lógica para la construcción dinámica de los controles de paginación (paginación tipo elipse)
     const totalPaginas = Math.ceil(catalogoActual.length / ITEMS_POR_PAGINA);
     if (totalPaginas <= 1 || !paginacion) {
         if(paginacion) paginacion.innerHTML = '';
@@ -211,7 +227,8 @@ window.mostrarPagina = function(pagina) {
 
     botones += `<button class="page-btn" ${pagina === totalPaginas ? 'disabled' : ''} onclick="mostrarPagina(${pagina + 1})">Sig →</button>`;
     paginacion.innerHTML = botones;
-    
+
+    //Auto-Scroll al inicio de la sección de libros al cambiar de página
     if (pagina > 1) {
         const section = document.querySelector('.shelf-section');
         if(section) section.scrollIntoView({ behavior: 'smooth' });
@@ -221,6 +238,12 @@ window.mostrarPagina = function(pagina) {
 // ==========================================
 // 4. MODAL DE DETALLES Y FILTRADOS DE CATÁLOGO
 // ==========================================
+
+/**
+*Despliega la ventana modal con la información completa de un libro seleccionado.
+*@param {number} indice - Posición del libro en el arreglo actual.
+*@param {boolean} esDelBanner - Identifica si el libro fue clikeado desde el banner principal.
+*/
 window.abrirDetalles = function(indice, esDelBanner = false) {
     const libro = esDelBanner ? destacadosLocalGlobal[indice] : catalogoActual[indice];
     
@@ -250,6 +273,10 @@ window.abrirDetalles = function(indice, esDelBanner = false) {
     document.getElementById("modalDetalle").style.display = "block";
 };
 
+/**
+*Consulta la base de datos de Supabase para traer el acervo físico exclusivo.
+*Maneja redirección si la función es llamada desde una vista ajena al grid.
+*/
 window.verLibrosLocales = async function(e) {
     if(e) e.preventDefault();
     
@@ -281,6 +308,9 @@ window.verLibrosLocales = async function(e) {
     }
 };
 
+//*
+*Retorna a la vista principal cargando el catálogo global.
+*/    
 window.irACatalogo = function(e) {
     if (document.getElementById('tituloCatalogo')) {
         if(e) e.preventDefault();
@@ -290,6 +320,9 @@ window.irACatalogo = function(e) {
     }
 };
 
+/**
+*Ejecuta una petición GET a la API de OpenLibrary en base a la entrada de los buscadores de la UI
+*/
 window.buscarLibro = async function() {
     const inputNav = document.getElementById('navSearchInput');
     const inputHero = document.getElementById('searchInput');
@@ -325,8 +358,14 @@ window.buscarLibro = async function() {
     }
 };
 
+/**
+*Gestiona el proceso transaccional de crear un nuevo p´restamo en la BD,
+*verificando sesión y disponibildad del ejemplar en físico.
+*@param {string} isbn - Identificador del libro a solicitar.
+*/
 window.solicitarPrestamo = async function(isbn) {
     try {
+        //Validación de sesión activa
         const { data: { session } } = await db.auth.getSession();
         if (!session) {
             alert("Debes iniciar sesión para poder solicitar un libro.");
@@ -334,6 +373,7 @@ window.solicitarPrestamo = async function(isbn) {
             return;
         }
 
+        //Validación de disponibilidad del ejemplar
         const { data: ejemplares, error: errEjemplar } = await db.from('ejemplares').select('id_ejemplar').eq('isbn', isbn).limit(1);
         if (errEjemplar) throw errEjemplar;
         if (!ejemplares || ejemplares.length === 0) {
@@ -341,11 +381,13 @@ window.solicitarPrestamo = async function(isbn) {
             return;
         }
 
+        //Generación de fechas de salida y retorno esperado
         const idEjemplarFisico = ejemplares[0].id_ejemplar;
         const fechaSalida = new Date();
         const fechaEsperada = new Date();
         fechaEsperada.setDate(fechaSalida.getDate() + 7);
 
+        //Generación de fechas de salida y retorno esperado
         const { error: errPrestamo } = await db.from('prestamos').insert([{
             id_usuario: session.user.id, id_ejemplar: idEjemplarFisico,
             fecha_salida: fechaSalida.toISOString().split('T')[0], fecha_esperada: fechaEsperada.toISOString().split('T')[0]
@@ -357,6 +399,10 @@ window.solicitarPrestamo = async function(isbn) {
     }
 };
 
+/**
+*Consulta la BD para recuperar 3 libros locales aleatorios o iniciales,
+*y pintarlos en el banner superior de promoción.
+*/
 async function cargarDestacadosLocal() {
     const banner = document.getElementById('localBooksBanner');
     if (!banner) return;
@@ -399,6 +445,11 @@ async function cargarDestacadosLocal() {
     }
 }
 
+/**
+*Función por defecto que se lanza al iniciar el index.
+*Solicita una búsqueda a Openlibrary de la categoría Computer Science.
+*Funciona como "Fallback: Si falla, intenta cargar los locales de Supabase."
+*/
 async function cargarLibros() {
     const grid = document.getElementById('bookGrid');
     if (!grid) return;
@@ -422,6 +473,10 @@ async function cargarLibros() {
     }
 }
 
+/**
+*Verifica el estado de autenticación de Supabase y alterna dinámicamente
+*la visibilidad de los botones de login/registro o cerrar sesión.
+*/
 async function verificarSesion() {
     const { data: { session } } = await db.auth.getSession();
     const btnLogin = document.getElementById("btnLogin");
@@ -476,7 +531,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- MODO CLARO / OSCURO ---
     const btnTheme = document.getElementById('btnTheme');
-    
+
+    //Verificación en caché local para persistir la preferencia del usuario.
     if (localStorage.getItem('temaBiblioTech') === 'light') {
         document.body.classList.add('light-mode');
     }
@@ -515,12 +571,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modalDetalle) modalDetalle.style.display = "none";
     };
 
+    //Listeners para ejecutar búsqueda al presionar "Enter"
     const inputNav = document.getElementById('navSearchInput');
     const inputHero = document.getElementById('searchInput');
     if (inputNav) inputNav.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); buscarLibro(); } });
     if (inputHero) inputHero.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); buscarLibro(); } });
 
     // --- FORMULARIOS DE SUPABASE ---
+    //Manejo de la lógica de Registro de un Usuario
     const regForm = document.getElementById('regForm');
     if (regForm) {
         regForm.onsubmit = async (e) => {
@@ -538,6 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    //Manejo de la lógica de Inicio de Sesión
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.onsubmit = async (e) => {
@@ -557,6 +616,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cargarDestacadosLocal();
     }
 
+    //Lógica para procesar intenciones guardadas en LocalStorage 
+    //(Un ejemplo es: Cuando el usuario hace una búsqueda desde otra página y es redirigido al index)
     if (document.getElementById('tituloCatalogo')) {
         const soloLocales = localStorage.getItem('cargarSoloLocales');
         const busquedaPendiente = localStorage.getItem('busquedaInmediata');
@@ -579,6 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
     verificarSesion();
 });
 
+//Listener para la visibilidad de la pestaña (Manejo dinámico)
 const tituloOriginal = document.title;
 document.addEventListener("visibilitychange", () => {
     document.title = document.hidden ? "¡Vuelve a la mejor biblioteca! 📚" : tituloOriginal;
@@ -587,6 +649,10 @@ document.addEventListener("visibilitychange", () => {
 // ==========================================
 // 7. ATAJOS DE BÚSQUEDA DEL FOOTER
 // ==========================================
+/**
+*Permite realizar búsquedas rápidas al dar clic a las etiquetas predefinidas del Footer.
+*@param {string} termino - Término a buscar (Ejemplo: "Inteligencia Artificial").
+*/
 window.busquedaRapida = function(termino, e) {
     if (e) e.preventDefault();
     
