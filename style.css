@@ -1,8 +1,19 @@
+/**
+*@fileoverview Hoja de estilos principal para la BiblioTech.
+*Implementa un sistema de diseño basado en CSS Custom Properties (Variables)
+*Para soportar tematización dinámica (Modo Claro /Oscuro), efectos de Glassmorphism
+*y un diseño completamente responsivo (Mobile-First adaptado).
+*/
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
 
 /* ==========================================
    1. VARIABLES (MODO OSCURO POR DEFECTO)
 ========================================== */
+/**
+*Se define la paleta de colores base en la pseudoclase :root.
+*Esto permite que todo el sitio consuma estas variables, facilitando
+*el mantenimiento y la transición entre temas sin reescribir clases.
+*/
 :root {
     --color-1: rgb(128, 0, 128); /* Púrpura */
     --color-2: rgb(128, 0, 64);  /* Magenta oscuro */
@@ -25,15 +36,20 @@
 /* ==========================================
    2. VARIABLES (MODO CLARO)
 ========================================== */
+/**
+*Al inyectar la clase .light-mode en el body desde JavaScript,
+*estas variables sobrescriben a las de :root, cambiando el tema
+*de todo el sitio instantáneamente mediante cascada.
+*/
 body.light-mode {
     --bg-main: #fcfcfc;          
     --bg-card: #ffffff;          
     --bg-nav: rgba(255, 255, 255, 0.95);
     
-    --accent-gold: #8b6508;      
-    --text-light: #1a1a1a;       
+    --accent-gold: #8b6508;    /*Dorado más oscuro para mantener el constraste sobre fondo blanco */  
+    --text-light: #1a1a1a;      /*Texto casi negro para legibilidad */
     --text-muted: #666666;
-    --border-color: rgba(128, 0, 128, 0.2); 
+    --border-color: rgba(128, 0, 128, 0.2);  /*Bordes con tono púrpura sutil */
 
     /* VARIABLES DINÁMICAS PARA EL FONDO DEL HERO EN MODO CLARO */
     --hero-bg-full: url('burrito_light.jpg'); 
@@ -43,6 +59,10 @@ body.light-mode {
 /* ==========================================
    3. ESTILOS GLOBALES
 ========================================== */
+/**
+*Reseteo básico del modelo de caja y tipografía base.
+*Se aplican transiciones globlaes para que el cambio de tema sea suave.
+*/
 * { 
     margin: 0; 
     padding: 0; 
@@ -55,16 +75,21 @@ body {
     background-color: var(--bg-main); 
     color: var(--text-light);
     line-height: 1.6;
-    overflow-x: hidden; 
+    overflow-x: hidden;  /* Evita scroll horizontal no deseado */
 }
 
 h1, h2, h3, h4, .logo {
-    font-family: 'Playfair Display', serif; 
+    font-family: 'Playfair Display', serif;  /* Tipogragia serif para dar aspecto clásifo/académico */
 }
 
 /* ==========================================
    4. NAVBAR Y LOGO
 ========================================== */
+/**
+*La barra de navegación utiliza Flexbox para distribuir sus elementos.
+*Se emplea position: sticky para mantenerla visible al hacer scroll
+*y backdrop-filter para el efecto de Glassmorphism (cristal esmerilado).
+*/
 .navbar {
     display: flex; 
     justify-content: space-between; 
@@ -75,7 +100,7 @@ h1, h2, h3, h4, .logo {
     border-bottom: 1px solid var(--border-color);
     position: sticky; 
     top: 0; 
-    z-index: 100;
+    z-index: 100; /* Asegura que la navbar se mantenga sobre el resto del contenido */
 }
 
 .logo { 
@@ -94,6 +119,7 @@ h1, h2, h3, h4, .logo {
     height: 40px;
     width: 40px;
     object-fit: contain;
+   /* Filtro matemático para convertir el logo original a un tono dorado/sepia que este adaptado al tema */
     filter: invert(70%) sepia(40%) saturate(600%) hue-rotate(350deg) brightness(95%) contrast(90%); 
 }
 
@@ -134,6 +160,9 @@ h1, h2, h3, h4, .logo {
     font-size: 1.2rem;
 }
 
+/**
+*Estilos base unificados para los botones de interacción de usuario.
+*/
 #btnLogin, .btn-login, #btnRegistro, .btn-register {
     display: inline-flex;
     align-items: center;
@@ -148,7 +177,7 @@ h1, h2, h3, h4, .logo {
     text-decoration: none;
     transition: all 0.3s ease;
 }
-
+/* Variantes de botones (Ghost contra Solid) */
 #btnLogin, .btn-login {
     background: transparent !important;
     color: var(--text-light) !important;
@@ -173,6 +202,12 @@ h1, h2, h3, h4, .logo {
 /* ==========================================
    6. HERO SECTION (IMAGEN DE FONDO COMPLETA Y LINTERNA)
 ========================================== */
+/**
+*Implementa múltiples fondos apílados.
+*Capa 1: Un gradiente radial que reacciona a JS (--x, --y) para simular una linterna.
+*Capa 2: Una capa semitransparente (overlay) para asegurar legibilidad del texto.
+*Capa 3: La imagen de fondo principal (el burrito).
+*/
 .hero { 
     padding: 150px 5% 100px; 
     position: relative;
@@ -192,7 +227,7 @@ h1, h2, h3, h4, .logo {
 .hero-content {
     max-width: 800px; 
     margin: 0 auto;
-    position: relative; 
+    position: relative; /* Asegura que el contenido esté por encima del fondo */
 }
 
 .hero h1 { 
@@ -240,6 +275,10 @@ h1, h2, h3, h4, .logo {
 .section-title { margin-bottom: 30px; }
 .section-title h2 { font-size: 1.8rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; }
 
+/**
+*Sistema de grilla automática. Este se ajusta dinámicamente al tamaño de pantalla
+*Sin necesidad múltiples media queries gracias a auto-fit y minmax.
+*/
 .shelf { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -259,7 +298,7 @@ h1, h2, h3, h4, .logo {
 }
 
 .book-card:hover { 
-    transform: translateY(-5px); 
+    transform: translateY(-5px);  /* Efecto de elevación al hacer hover */
     border-color: var(--color-2); 
     box-shadow: 0 10px 20px rgba(128,0,64,0.2); 
 }
@@ -298,6 +337,7 @@ h1, h2, h3, h4, .logo {
     background: var(--color-1) !important; color: white !important; border-color: var(--color-1) !important;
 }
 
+/* Estilos para el botón de la página y botones deshabilitados */
 #paginacion .active, #paginacion button:disabled, #paginacion span {
     background: rgba(128,128,128,0.1) !important; color: var(--text-muted) !important; cursor: not-allowed;
 }
@@ -305,6 +345,10 @@ h1, h2, h3, h4, .logo {
 /* ==========================================
    9. MODALES (REGISTRO, LOGIN Y LIBROS)
 ========================================== */
+/**
+*Capa oscura que cubre toda la pantalla (Overlay).
+*Utiliza position: fixed y z-index alto para sobreponerse a todo el sitio
+*/
 .modal { 
     display: none; 
     position: fixed; 
@@ -338,6 +382,7 @@ h1, h2, h3, h4, .logo {
     width: 100%; background: var(--color-1); color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; font-weight: 600;
 }
 
+/* Ajustes específicos para el modal de vista de detalle del libro */
 .modal-extralarge { max-width: 950px !important; width: 95%; padding: 45px; }
 .open-library-layout { display: flex; gap: 50px; }
 .ol-left-col { width: 280px; display: flex; flex-direction: column; gap: 20px; }
@@ -400,6 +445,7 @@ h1, h2, h3, h4, .logo {
     transition: all 0.3s ease;
 }
 
+/* Media Query: Aplica cuando la pantalla es menor a 900px (Tablets y Teléfonos)*/
 @media (max-width: 900px) {
     /* Mostramos la hamburguesa */
     .hamburger { display: flex; }
