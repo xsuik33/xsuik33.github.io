@@ -48,7 +48,7 @@ El modelo básico evolucionó para soportar dependencias de existencia y jerarqu
 * Se utilizó **herencia (ISA)** para distinguir los privilegios de préstamo entre `Alumnos` y `Profesores`, evitando generar valores nulos (NULL) en la base de datos.
 
 > 
-> `![Diagrama EER Extendido](docs/images/diagrama-eer.png)`
+> 
 
 ### Fase 3 y 4: Transformación Relacional e Implementación DDL/DCL
 El modelo EER se tradujo a esquemas relacionales exactos y se implementó en **PostgreSQL (Supabase)**. 
