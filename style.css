@@ -29,7 +29,7 @@
     --border-color: rgba(212, 175, 55, 0.3); 
 
     /* VARIABLES DINÁMICAS PARA EL FONDO DEL HERO EN MODO OSCURO */
-    --hero-bg-full: url('burrito_dark.jpg'); 
+    --hero-bg-full: url('/Imagenes/Pagina/burrito_dark.jpg'); 
     --hero-overlay: rgba(0,0,0,0.6); 
 }
 
