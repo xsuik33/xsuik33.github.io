@@ -46,10 +46,10 @@ body.light-mode {
     --bg-card: #ffffff;          
     --bg-nav: rgba(255, 255, 255, 0.95);
     
-    --accent-gold: #8b6508;    /*Dorado más oscuro para mantener el constraste sobre fondo blanco */  
-    --text-light: #1a1a1a;      /*Texto casi negro para legibilidad */
+    --accent-gold: #8b6508;    /* Dorado más oscuro para mantener el constraste sobre fondo blanco */  
+    --text-light: #1a1a1a;     /* Texto casi negro para legibilidad */
     --text-muted: #666666;
-    --border-color: rgba(128, 0, 128, 0.2);  /*Bordes con tono púrpura sutil */
+    --border-color: rgba(128, 0, 128, 0.2);  /* Bordes con tono púrpura sutil */
 
     /* VARIABLES DINÁMICAS PARA EL FONDO DEL HERO EN MODO CLARO */
     --hero-bg-full: url('Imagenes/Pagina/burrito_light.jpg'); 
@@ -161,9 +161,9 @@ h1, h2, h3, h4, .logo {
 }
 
 /**
-*Estilos base unificados para los botones de interacción de usuario.
+* Estilos base unificados para los botones de Login, Registro y Cerrar Sesión
 */
-#btnLogin, .btn-login, #btnRegistro, .btn-register {
+#btnLogin, .btn-login, #btnRegistro, .btn-register, #btnLogout {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -177,7 +177,8 @@ h1, h2, h3, h4, .logo {
     text-decoration: none;
     transition: all 0.3s ease;
 }
-/* Variantes de botones (Ghost contra Solid) */
+
+/* Variante Ghost (Para el botón de Login) */
 #btnLogin, .btn-login {
     background: transparent !important;
     color: var(--text-light) !important;
@@ -189,13 +190,14 @@ h1, h2, h3, h4, .logo {
     color: var(--accent-gold) !important;
 }
 
-#btnRegistro, .btn-register {
+/* Variante Sólida (Para el botón de Registro y Cerrar Sesión) */
+#btnRegistro, .btn-register, #btnLogout {
     background: var(--color-1) !important; 
     color: white !important;
     border: none !important;
 }
 
-#btnRegistro:hover, .btn-register:hover { 
+#btnRegistro:hover, .btn-register:hover, #btnLogout:hover { 
     background: var(--color-2) !important; 
 } 
 
@@ -277,7 +279,7 @@ h1, h2, h3, h4, .logo {
 
 /**
 *Sistema de grilla automática. Este se ajusta dinámicamente al tamaño de pantalla
-*Sin necesidad múltiples media queries gracias a auto-fit y minmax.
+*Sin necesidad de múltiples media queries gracias a auto-fit y minmax.
 */
 .shelf { 
     display: grid; 
@@ -316,7 +318,7 @@ h1, h2, h3, h4, .logo {
 /* ==========================================
    8. PAGINACIÓN
 ========================================== */
-#paginacion {
+.pagination, #pagination, .paginacion, #paginacion {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -326,20 +328,34 @@ h1, h2, h3, h4, .logo {
     text-align: center;
 }
 
+.pagination button, .pagination span, .pagination a, .pagination input,
 #paginacion button, #paginacion span {
-    display: inline-flex; justify-content: center; align-items: center; min-width: 40px; height: 40px;
-    background: var(--bg-main) !important; color: var(--accent-gold) !important;
-    border: 1px solid var(--border-color) !important; border-radius: 8px;
-    cursor: pointer; font-weight: 600; transition: all 0.2s; text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 40px;
+    height: 40px;
+    background: var(--bg-main) !important; 
+    color: var(--accent-gold) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    text-decoration: none;
 }
 
-#paginacion button:hover {
-    background: var(--color-1) !important; color: white !important; border-color: var(--color-1) !important;
+.pagination button:hover, .pagination a:hover, #paginacion button:hover {
+    background: var(--color-1) !important;
+    color: white !important;
+    border-color: var(--color-1) !important;
 }
 
-/* Estilos para el botón de la página y botones deshabilitados */
+.pagination .active, .pagination button:disabled, .pagination span,
 #paginacion .active, #paginacion button:disabled, #paginacion span {
-    background: rgba(128,128,128,0.1) !important; color: var(--text-muted) !important; cursor: not-allowed;
+    background: rgba(128,128,128,0.1) !important;
+    color: var(--text-muted) !important;
+    cursor: not-allowed;
 }
 
 /* ==========================================
@@ -483,12 +499,21 @@ h1, h2, h3, h4, .logo {
     .hamburger.active span:nth-child(2) { opacity: 0; }
     .hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
-    /* Ajustes generales de la página para celulares */
+    /* Ajustes generales de la página para celulares y optimización de espacios */
     .hero { padding: 120px 5% 60px; }
     .hero h1 { font-size: 2.2rem; }
     .hero p { font-size: 1rem; }
+    
     .footer-container { flex-direction: column; gap: 30px; text-align: center; }
     .open-library-layout { flex-direction: column; align-items: center; }
     .ol-left-col { width: 100%; max-width: 300px; }
     .ol-right-col h2 { text-align: center; font-size: 2rem; }
+}
+
+/* Ajuste extra para celulares muy pequeños (menos de 480px) */
+@media (max-width: 480px) {
+    .nav-search { display: none; } /* Ocultamos buscador en nav muy pequeño para ganar espacio */
+    .hero h1 { font-size: 1.5rem; }
+    .book-card { flex-direction: column; text-align: center; }
+    .book-cover-img { margin: 0 auto; }
 }
