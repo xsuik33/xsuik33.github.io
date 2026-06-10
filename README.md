@@ -108,14 +108,14 @@ La robusta base de datos se consumió mediante peticiones asíncronas para dar v
 
 | Pantalla de Inicio | Inicio de Sesión |
 |:---:|:---:|
-| <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Page.png" alt="Vista principal" width="400"/> | <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Login.png" alt="Login" width="400"/> |
+| <img loading="lazy" src="Imagenes/Documentacion/Page.png" alt="Vista principal" width="400"/> | <img loading="lazy" src="Imagenes/Documentacion/Login.png" alt="Login" width="400"/> |
 
 | Registro de Usuario | Vista de Catálogo / Sección |
 |:---:|:---:|
-| <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Register.png" alt="Registro" width="400"/> | <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Section.png" alt="Vista de Sección" width="400"/> |
+| <img loading="lazy" src="Imagenes/Documentacion/Register.png" alt="Registro" width="400"/> | <img loading="lazy" src="Imagenes/Documentacion/Section.png" alt="Vista de Sección" width="400"/> |
 
 | Vista Previa del Libro |
 |:---:|
-| <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Preview.png" alt="Detalle del Libro" width="400"/> |
+| <img loading="lazy" src="Imagenes/Documentacion/Preview.png" alt="Detalle del Libro" width="400"/> |
 
 </details>
