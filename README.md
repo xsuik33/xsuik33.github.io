@@ -41,7 +41,7 @@ El proyecto nació para resolver tres problemas críticos identificados en el co
 3. **Cálculo automático de multas:** Se establecieron los atributos `Fecha_Devolución_E` (Esperada) y `Fecha_Entrega_R` (Real) en el `Préstamo`. Al relacionarlo con `Multa`, el sistema ejecuta una función lógica que resta ambas fechas y multiplica por la tarifa diaria, eliminando la arbitrariedad en los cobros.
 
 <div align="center">
-  <img loading="lazy" src="./Imágenes/Modelos/diagrama-er.png" alt="Diagrama Entidad-Relación" width="800"/>
+  <img loading="lazy" src="Imagenes/Modelos/diagrama-er.png" alt="Diagrama Entidad-Relación" width="800"/>
   <br>
   <em>Figura 1: Diagrama ER inicial con la identificación de entidades y atributos base.</em>
 </div>
@@ -50,7 +50,7 @@ El proyecto nació para resolver tres problemas críticos identificados en el co
 El modelo básico resultaba insuficiente para escenarios del mundo real. Se implementó el Modelo EER para solucionar ambigüedades críticas, utilizando la Notación de Peter Chen para comprender a profundidad la semántica del negocio.
 
 <div align="center">
-  <img loading="lazy" src="./Imágenes/Modelos/diagrama-eer-chen.png" alt="Diagrama EER - Notación Peter Chen" width="800"/>
+  <img loading="lazy" src="Imagenes/Modelos/diagrama-eer-chen.png" alt="Diagrama EER - Notación Peter Chen" width="800"/>
   <br>
   <em>Figura 2: Diagrama EER en notación Peter Chen resaltando las jerarquías y entidades débiles.</em>
 </div>
@@ -66,7 +66,7 @@ El modelo básico resultaba insuficiente para escenarios del mundo real. Se impl
 El modelo EER se tradujo a esquemas relacionales exactos y se construyó en PostgreSQL (Supabase), aplicando reglas matemáticas estrictas. Para esta fase, la notación evolucionó al **Modelo Relacional (Notación Crow's Foot)**, el cual es ideal para la implementación técnica ya que define explícitamente las Llaves Primarias (PK) y Foráneas (FK).
 
 <div align="center">
-  <img loading="lazy" src="./Imágenes/Modelos/diagrama-relacional.png" alt="Esquema del Modelo Relacional / Crow's Foot" width="800"/>
+  <img loading="lazy" src="Imagenes/Modelos/diagrama-relacional.png" alt="Esquema del Modelo Relacional / Crow's Foot" width="800"/>
   <br>
   <em>Figura 3: Modelo Relacional (Crow's Foot) consolidado tras aplicar las reglas de transformación.</em>
 </div>
@@ -100,11 +100,17 @@ La robusta base de datos se consumió mediante peticiones asíncronas para dar v
 
 | Pantalla de Inicio | Inicio de Sesión |
 |:---:|:---:|
-| <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Page.png" alt="Vista principal" width="400"/> | <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Login.png" alt="Login" width="400"/> |
+| <img loading="lazy" src="Imagenes/Documentacion/Page.png" alt="Vista principal" width="400"/> | <img loading="lazy" src="Imagenes/Documentacion/Login.png" alt="Login" width="400"/> |
 
 | Registro de Usuario | Vista de Catálogo / Sección |
 |:---:|:---:|
-| <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Register.png" alt="Registro" width="400"/> | <img loading="lazy" src="https://github.com/xsuik33/xsuik33.github.io/blob/main/Imágenes/Documentacion/Section.png" alt="Vista de Sección" width="400"/> |
+| <img loading="lazy" src="Imagenes/Documentacion/Register.png" alt="Registro" width="400"/> | <img loading="lazy" src="Imagenes/Documentacion/Section.png" alt="Vista de Sección" width="400"/> |
+
+| Vista Previa del Libro |
+|:---:|
+| <img loading="lazy" src="Imagenes/Documentacion/Preview.png" alt="Detalle del Libro" width="400"/> |
+
+</details>
 
 | Vista Previa del Libro |
 |:---:|
