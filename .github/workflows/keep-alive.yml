@@ -1,0 +1,13 @@
+name: Keep Supabase Alive
+on:
+  schedule:
+    - cron: '0 0 * * 1,4'  
+  workflow_dispatch:
+jobs:
+  ping_database:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hacer ping a la base de datos
+        env:
+          DB_URL: ${{secrets.SUPABASE_DB_URL }}
+        run: psql "$DB_URL" -c "SELECT 1;"
