@@ -104,7 +104,7 @@ La robusta base de datos se consumió mediante peticiones asíncronas para dar v
 ## Galería del Sistema
 
 <details>
-<summary>Ver capturas de pantalla de la plataforma</summary>
+<summary>🖼️ Ver capturas de pantalla de la plataforma</summary>
 
 | Pantalla de Inicio | Inicio de Sesión |
 |:---:|:---:|
