@@ -9,5 +9,5 @@ jobs:
     steps:
       - name: Hacer ping a la base de datos
         env:
-          DB_URL: ${{secrets.SUPABASE_DB_URL }}
+          DB_URL: ${{secrets.SUPABASE_DB_IRL }}
         run: psql "$DB_URL" -c "SELECT 1;"
