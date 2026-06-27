@@ -16,7 +16,7 @@ Plataforma web enfocada en la comunidad universitaria (alumnos y profesores) del
 
 ## Enlaces del Proyecto
 * **Código Fuente:** [Repositorio en GitHub](https://github.com/xsuik33/xsuik33.github.io)
-* **Demo en Vivo:** [BiblioTech Web](https://xsuik33.github.io)
+* **Demo en Vivo:** [BiblioTech Web]([https://xsuik33.github.io](https://xsuik33.github.io/DEMOVIVO/))
 
 ---
 
